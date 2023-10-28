@@ -160,7 +160,7 @@ app.on('window-all-closed', () => {
 
 const registerGlobalShortcut = () => {
   const ret = globalShortcut.register('CommandOrControl+Alt+I', () => {
-    console.log('CommandOrControl+Alt+I is pressed')
+    console.log('CommandOrControl+OptionOrAlt+I is pressed')
     if (mainWindow === null) createWindow()
   })
 
