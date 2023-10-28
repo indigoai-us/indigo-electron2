@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-indigoelectron2-dev-190143-authRole",
+      "UnauthRoleArn": "arn:aws:iam::804849608251:role/amplify-indigoelectron2-dev-190143-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::804849608251:role/amplify-indigoelectron2-dev-190143-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-indigoelectron2-dev-190143-deployment",
+      "UnauthRoleName": "amplify-indigoelectron2-dev-190143-unauthRole",
+      "StackName": "amplify-indigoelectron2-dev-190143",
+      "StackId": "arn:aws:cloudformation:us-east-1:804849608251:stack/amplify-indigoelectron2-dev-190143/f20b3000-7535-11ee-b6e8-1257eb19d3d3",
+      "AmplifyAppId": "d1b7w46is5e40i"
+    }
+  }
+}

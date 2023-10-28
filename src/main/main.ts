@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -56,18 +56,50 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+const RESOURCES_PATH = app.isPackaged
+? path.join(process.resourcesPath, 'assets')
+: path.join(__dirname, '../../assets');
+
+const getAssetPath = (...paths: string[]): string => {
+return path.join(RESOURCES_PATH, ...paths);
+};
+
+let tray: Tray | null = null;
+const createTray = () => {
+  const icon = getAssetPath('icon.png')
+  const trayicon = nativeImage.createFromPath(icon)
+  tray = new Tray(trayicon.resize({width: 16}))
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Show App',
+      click: () => {
+        createWindow()
+      }
+    },
+    {
+      label: 'Quit',
+      click: () => {
+        app.quit()
+      }
+    },
+  ])
+
+  tray.on('click', () => {
+    createWindow()
+  })
+
+  tray.setToolTip('IndigoAI')
+  tray.setContextMenu(contextMenu)
+}
+
 const createWindow = async () => {
   if (isDebug) {
     await installExtensions();
   }
 
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets')
-    : path.join(__dirname, '../../assets');
-
-  const getAssetPath = (...paths: string[]): string => {
-    return path.join(RESOURCES_PATH, ...paths);
-  };
+  if(!tray) {
+    createTray();
+  }
 
   mainWindow = new BrowserWindow({
     show: false,
@@ -120,7 +152,9 @@ app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
-    app.quit();
+    // app.quit();
+  } else {
+    app.dock.hide()
   }
 });
 

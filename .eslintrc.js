@@ -31,4 +31,10 @@ module.exports = {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
   },
+  'react/function-component-definition': [
+    2,
+    {
+      namedComponents: 'function-declaration',
+    },
+  ],
 };
