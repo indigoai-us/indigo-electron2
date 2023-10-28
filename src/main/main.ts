@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -158,10 +158,22 @@ app.on('window-all-closed', () => {
   }
 });
 
+const registerGlobalShortcut = () => {
+  const ret = globalShortcut.register('CommandOrControl+Alt+I', () => {
+    console.log('CommandOrControl+Alt+I is pressed')
+    if (mainWindow === null) createWindow()
+  })
+
+  if (!ret) {
+    console.log('registration failed')
+  }
+}
+
 app
   .whenReady()
   .then(() => {
     createWindow();
+    registerGlobalShortcut();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
