@@ -3,9 +3,10 @@ import { MemoryRouter as Router, Routes, Route, useNavigate } from 'react-router
 import { Amplify, Auth, API } from 'aws-amplify';
 import config from '../aws-exports-with-auth';
 import icon from '../../assets/icon.svg';
-import './App.css';
 import Login from './Login';
 import PrivateRoute from './PrivateRoute';
+import './App.css'
+import Commands from './Commands';
 
 Amplify.configure({ ...config });
 
@@ -58,7 +59,7 @@ export default function App() {
     <Router>
       <Routes>
         <Route path='/' element={<PrivateRoute/>}>
-          <Route path="/" element={<Hello />} />
+          <Route path="/" element={<Commands />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>

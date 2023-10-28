@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
-import './App.css';
 
 export default function PrivateRoute({ children, ...rest }: any) {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
