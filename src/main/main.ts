@@ -65,15 +65,17 @@ return path.join(RESOURCES_PATH, ...paths);
 };
 
 let tray: Tray | null = null;
+
 const createTray = () => {
-  const icon = getAssetPath('icon.png')
+  const icon = getAssetPath('IndigoLogoSmall1.png')
   const trayicon = nativeImage.createFromPath(icon)
-  tray = new Tray(trayicon.resize({width: 16}))
+  tray = new Tray(trayicon.resize({width: 50}))
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show App',
+      accelerator: 'CommandOrControl+Alt+I',
       click: () => {
-        createWindow()
+        if (mainWindow === null) createWindow()
       }
     },
     {
@@ -85,7 +87,7 @@ const createTray = () => {
   ])
 
   tray.on('click', () => {
-    createWindow()
+    if (mainWindow === null) createWindow()
   })
 
   tray.setToolTip('IndigoAI')
@@ -106,6 +108,7 @@ const createWindow = async () => {
     width: 1024,
     height: 728,
     icon: getAssetPath('icon.png'),
+    // frame: false,
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
@@ -162,6 +165,7 @@ const registerGlobalShortcut = () => {
   const ret = globalShortcut.register('CommandOrControl+Alt+I', () => {
     console.log('CommandOrControl+Alt+I is pressed')
     if (mainWindow === null) createWindow()
+    if (mainWindow !== null) mainWindow.show();
   })
 
   if (!ret) {

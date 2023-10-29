@@ -7,19 +7,25 @@ import './App.css'
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginIncorrect, setLoginIncorrect] = useState(false);
   const navigate = useNavigate();
   const handleLogin = async (e: any) => {
     e.preventDefault();
+    setIsLoading(true);
     console.log('login email: ', email);
     console.log('login password: ', password);
     try {
       await Auth.signIn(email, password).then((user: any) => {
         console.log('user: ', user);
         navigate('/');
+        setIsLoading(false);
         return user;
       });
     } catch (error) {
       console.log('error signing in', error);
+      setLoginIncorrect(true);
+      setIsLoading(false);
     }
   };
 
@@ -61,11 +67,37 @@ const Login = () => {
             type="submit"
             className='bg-indigo-700 rounded-md px-4 py-2 transition-all hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none'
             style={{width: '100%'}}
+            disabled={isLoading}
           >
-            Login
+            {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </div>
       </form>
+      <div className='flex-col content-center'>
+        <a
+          href="https://app.getindigo.ai/create-account"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <div className='text-center text-sm mt-2'>
+            Create Account
+          </div>
+        </a>
+        <a
+          href="https://app.getindigo.ai/login"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <div className='text-center text-sm mt-1' style={{opacity: '50%'}}>
+            Forgot Password
+          </div>
+        </a>
+      </div>
+      {loginIncorrect &&
+        <div className='bg-red-600 rounded-xl py-1 mt-4 text-center text-sm'>
+          <i>Incorrect login/password</i>
+        </div>
+      }
     </div>
   );
 };
