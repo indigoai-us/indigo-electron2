@@ -7,6 +7,8 @@ import Login from './Login';
 import PrivateRoute from './PrivateRoute';
 import './App.css'
 import Commands from './Commands';
+import Inputs from './Inputs';
+import WebView from './WebView';
 
 Amplify.configure({ ...config });
 
@@ -60,6 +62,12 @@ export default function App() {
       <Routes>
         <Route path='/' element={<PrivateRoute/>}>
           <Route path="/" element={<Commands />} />
+        </Route>
+        <Route path='/inputs' element={<PrivateRoute/>}>
+          <Route path="/inputs" element={<Inputs />} />
+        </Route>
+        <Route path='/job' element={<PrivateRoute/>}>
+          <Route path="/job" element={<WebView />} />
         </Route>
         <Route path="/login" element={<Login />} />
       </Routes>

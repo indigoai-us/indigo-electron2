@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Auth, API } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/IndigoLogoHorizontal2.png';
@@ -10,6 +10,15 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginIncorrect, setLoginIncorrect] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.electron.ipcRenderer.send(
+      'window-resize',
+      400, // height
+      600  // width
+    )
+  }, []);
+
   const handleLogin = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
@@ -30,10 +39,8 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="IndigoAI" src={logo} />
-      </div>
+    <div className='flex flex-col items-center justify-center h-screen'>
+      <img width="200" alt="IndigoAI" src={logo} />
       <form className="mt-6" onSubmit={handleLogin}>
         <div className="mb-4">
           <label

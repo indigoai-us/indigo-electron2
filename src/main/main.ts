@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -30,6 +30,28 @@ ipcMain.on('ipc-example', async (event, arg) => {
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
 });
+
+ipcMain.on('resize-me-please', (event, arg) => {
+  mainWindow && mainWindow.setSize(600,400)
+})
+
+ipcMain.on('window-resize', (e, width, height) => {
+  const primaryDisplay = screen.getPrimaryDisplay()
+  let screenDimention = primaryDisplay.workAreaSize
+  const w = screenDimention.width
+  const h = screenDimention.height
+
+  const x = (w - width) / 2;
+  const y = (h - height) / 2;
+
+  const windowSize = {
+    width: width,
+    height: height,
+    x,
+    y,
+  }
+  mainWindow && mainWindow.setBounds(windowSize)
+})
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -105,10 +127,11 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 600,
+    height: 400,
     icon: getAssetPath('icon.png'),
-    // frame: false,
+    // resizable: false,
+    frame: false,
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
@@ -163,7 +186,6 @@ app.on('window-all-closed', () => {
 
 const registerGlobalShortcut = () => {
   const ret = globalShortcut.register('CommandOrControl+Alt+I', () => {
-    console.log('CommandOrControl+Alt+I is pressed')
     if (mainWindow === null) createWindow()
     if (mainWindow !== null) mainWindow.show();
   })
@@ -172,6 +194,15 @@ const registerGlobalShortcut = () => {
     console.log('registration failed')
   }
 }
+
+const appFolder = path.dirname(process.execPath)
+const updateExe = path.resolve(appFolder, '..', 'Update.exe')
+const exeName = path.basename(process.execPath)
+
+app.setLoginItemSettings({
+  openAtLogin: true,
+  openAsHidden: true,
+})
 
 app
   .whenReady()

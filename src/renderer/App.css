@@ -8,7 +8,29 @@ body {
   color: #fff;
   height: 100vh;
   overflow-y: hidden;
-  display: flex;
+  /* display: flex;
   justify-content: center;
-  align-items: center;
+  width: 100%; */
+  /* align-items: center; */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #c0c0c0 #161617;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #161617;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #c0c0c0;
+  border-radius: 10px;
+  border: 0px solid #ffffff;
 }

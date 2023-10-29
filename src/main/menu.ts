@@ -32,7 +32,7 @@ export default class MenuBuilder {
         : this.buildDefaultTemplate();
 
     const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(null);
+    Menu.setApplicationMenu(menu);
 
     return menu;
   }
@@ -103,13 +103,13 @@ export default class MenuBuilder {
     const subMenuViewDev: MenuItemConstructorOptions = {
       label: 'View',
       submenu: [
-        {
-          label: 'Reload',
-          accelerator: 'Command+R',
-          click: () => {
-            this.mainWindow.webContents.reload();
-          },
-        },
+        // {
+        //   label: 'Reload',
+        //   accelerator: 'Command+R',
+        //   click: () => {
+        //     this.mainWindow.webContents.reload();
+        //   },
+        // },
         {
           label: 'Toggle Full Screen',
           accelerator: 'Ctrl+Command+F',
@@ -200,7 +200,7 @@ export default class MenuBuilder {
           },
           {
             label: '&Close',
-            accelerator: 'Ctrl+W',
+            accelerator: 'Esc',
             click: () => {
               this.mainWindow.close();
             },
@@ -213,13 +213,13 @@ export default class MenuBuilder {
           process.env.NODE_ENV === 'development' ||
           process.env.DEBUG_PROD === 'true'
             ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow.webContents.reload();
-                  },
-                },
+                // {
+                //   label: '&Reload',
+                //   accelerator: 'Ctrl+R',
+                //   click: () => {
+                //     this.mainWindow.webContents.reload();
+                //   },
+                // },
                 {
                   label: 'Toggle &Full Screen',
                   accelerator: 'F11',

@@ -8,15 +8,11 @@ export default function PrivateRoute({ children, ...rest }: any) {
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((user) => {
-        console.log('auth user: ', user);
         setIsAuthenticated(true);
-        console.log({ user });
         return user;
       })
       .catch((err) => {
-        console.log('auth err: ', err);
         setIsAuthenticated(false);
-        console.log({ err });
       });
   }, []);
   console.log('isAuthenticated: ', isAuthenticated);
