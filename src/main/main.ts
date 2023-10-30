@@ -129,7 +129,7 @@ const createWindow = async () => {
     show: false,
     width: 600,
     height: 400,
-    icon: getAssetPath('icon.png'),
+    icon: getAssetPath('IndigoLogoSmall1.png'),
     // resizable: false,
     frame: false,
     webPreferences: {
