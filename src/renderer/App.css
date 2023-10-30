@@ -34,3 +34,7 @@ body {
   border-radius: 10px;
   border: 0px solid #ffffff;
 }
+
+.historyrow:hover :nth-child(3) {
+  display: block;
+}

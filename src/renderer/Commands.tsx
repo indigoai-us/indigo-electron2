@@ -78,7 +78,7 @@ const Commands = () => {
       return;
     }
     if(command.inputs.length > 0) {
-      navigate('/inputs',{state: command})
+      navigate('/inputs',{state: {...command, copied: clipContents}})
     } else {
       const job = await createJob({command});
       console.log('job: ', job);
@@ -124,6 +124,9 @@ const Commands = () => {
               {command.usesCopied &&
                 <div className='text-xs px-2 bg-gray-700 align-middle h-5 ml-3 mt-1'>Copied</div>
               }
+              {command.inputs.length === 0 &&
+                <div className='text-xs px-2 bg-gray-700 align-middle h-5 ml-3 mt-1'>No Inputs</div>
+              }
             </div>
             <div>
               <h1>{index}</h1>
@@ -140,6 +143,9 @@ const Commands = () => {
         </div>
         <button type="button" onClick={handleLogout}>
           Logout
+        </button>
+        <button type="button" onClick={() => navigate('/history')}>
+          History
         </button>
       </div>
     </div>
