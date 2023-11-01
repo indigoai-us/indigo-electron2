@@ -124,9 +124,6 @@ const Commands = () => {
               {command.usesCopied &&
                 <div className='text-xs px-2 bg-gray-700 align-middle h-5 ml-3 mt-1'>Copied</div>
               }
-              {command.inputs.length === 0 &&
-                <div className='text-xs px-2 bg-gray-700 align-middle h-5 ml-3 mt-1'>No Inputs</div>
-              }
             </div>
             <div>
               <h1>{index}</h1>

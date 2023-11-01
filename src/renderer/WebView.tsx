@@ -14,7 +14,7 @@ const WebView = () => {
     )
   }, []);
 
-  const baseUrl = process.env.NODE_ENV ? 'http://localhost:3000/?id=' : 'https://indigowebview.diffuze.ai/?id=';
+  const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/?id=' : 'https://indigowebview.diffuze.ai/?id=';
   const url = baseUrl + location.state.id;
   console.log('url: ', url);
 
