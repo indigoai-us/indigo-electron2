@@ -41,8 +41,9 @@ ipcMain.on('window-resize', (e, width, height) => {
   const w = screenDimention.width
   const h = screenDimention.height
 
-  const x = (w - width) / 2;
-  const y = (h - height) / 2;
+  const x = Math.round((w - width) / 2);
+  const y = Math.round((h - height) / 2);
+
 
   const windowSize = {
     width: width,
@@ -50,6 +51,7 @@ ipcMain.on('window-resize', (e, width, height) => {
     x,
     y,
   }
+
   mainWindow && mainWindow.setBounds(windowSize)
 })
 
