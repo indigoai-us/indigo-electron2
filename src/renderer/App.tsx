@@ -59,6 +59,7 @@ export default function App() {
   }, []);
 
   return (
+    <div className='px-2'>
     <Router>
       <Routes>
         <Route path='/' element={<PrivateRoute/>}>
@@ -76,5 +77,6 @@ export default function App() {
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
+    </div>
   );
 }

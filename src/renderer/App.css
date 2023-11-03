@@ -4,8 +4,15 @@
 
 body {
   position: relative;
-  background: #161617;
-  color: #fff;
+  scroll-behavior: smooth;
+  border-radius: 6px;
+  border: 2px solid rgba(15, 14, 20, 0.8);
+
+  background: #121214;
+
+  box-shadow: 8px 8px 74px 0px rgba(0, 0, 0, 0.65);
+  /* backdrop-filter: blur(12px); */
+  color: #f7f1f9;
   height: 100vh;
   overflow-y: hidden;
   /* display: flex;
@@ -17,7 +24,7 @@ body {
 /* Firefox */
 * {
   scrollbar-width: auto;
-  scrollbar-color: #c0c0c0 #161617;
+  scrollbar-color: #c0c0c0 #1E1D2D;
 }
 
 /* Chrome, Edge, and Safari */
@@ -26,15 +33,29 @@ body {
 }
 
 *::-webkit-scrollbar-track {
-  background: #161617;
+  background: #1E1D2D;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #c0c0c0;
+  background-color: #343245;
   border-radius: 10px;
   border: 0px solid #ffffff;
 }
 
 .historyrow:hover :nth-child(3) {
   display: block;
+}
+.command {
+  transition: background-color 0.2s ease;
+}
+
+.command-highlighted, .command:hover {
+  animation: commandhighlighted 0.5s ease;
+  background-color: #4c06d7; /* Lighter color */
+  transition: background-color 0.2s ease;
+
+}
+@keyframes commandhighlighted {
+  0% { background-color: #7032ee; } /* Initial lighter color */
+  100% { background-color: #4c06d7; } /* Final color */
 }

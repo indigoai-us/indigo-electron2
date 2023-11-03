@@ -14,8 +14,8 @@ const Login = () => {
   useEffect(() => {
     window.electron.ipcRenderer.send(
       'window-resize',
-      400, // height
-      600  // width
+      600, // width
+      600  // height
     )
   }, []);
 

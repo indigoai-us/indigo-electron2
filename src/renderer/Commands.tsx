@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Auth, API } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/IndigoLogoHorizontal2.png';
@@ -11,7 +11,14 @@ const Commands = () => {
   const [commands, setCommands] = useState([]);
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const navigate = useNavigate();
+  const commandRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    inputRef.current && inputRef.current.focus();
+  }, []);
 
   const getCommands = async () => {
 
@@ -49,10 +56,27 @@ const Commands = () => {
     if(event.ctrlKey && event.key === 'r') {
       getCommands();
     }
-    if(event.arrowDown) {
-      console.log('arrowDown pressed');
+    if(event.key === 'Enter') {
+      const command = commands[highlightedIndex];
+      command && runCommand(command);
     }
-  }, [commands]);
+    if(event.key === 'ArrowDown') {
+      setHighlightedIndex((prevIndex) => {
+        const newIndex = prevIndex >= 0 ? Math.min(prevIndex + 1, commands.length - 1) : 0;
+        commandRefs.current[newIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return newIndex;
+      });
+    }
+    if(event.key === 'ArrowUp') {
+      setHighlightedIndex((prevIndex) => {
+        const newIndex = Math.max(prevIndex - 1, 0);
+        commandRefs.current[newIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return newIndex;
+      });
+    }
+
+
+  }, [commands, highlightedIndex]);
 
   useEffect(() => {
     // attach the event listener
@@ -100,48 +124,57 @@ const Commands = () => {
 
   return (
     <div className='flex flex-col items-center h-screen justify-between'>
+      {/* Input Field */}
       <div className='flex-none w-full'>
         <input
           name="search"
+          ref={inputRef}
           onChange={(e) => setSearch(e.target.value)}
-          className="block w-full px-4 py-2 mt-2 text-slate-300 backdrop-brightness-90 bg-transparent outline-none"
+          className="block w-full px-4 py-2 mt-2 text-gray-300 bg-gray-950  outline-none"
           placeholder='Start typing to find a command...'
         />
       </div>
       <div>
         {error && <div className='text-red-500'>{error}</div>}
       </div>
-      <div className="grow overflow-auto w-full p-2 h-full">
+      {/* Command List */}
+      <div className="grow overflow-auto w-full p-2 h-full command-list">
         {commands.map((command: any, index: number) => (
           <div
             key={command.id}
             id={command._id}
-            className='p-2 hover:bg-indigo-700 cursor-pointer flex justify-between'
+            className={`p-2 cursor-pointer flex justify-between command ${highlightedIndex === index ? 'command-highlighted' : ''}`}
             onClick={() => runCommand(command)}
+            ref={(el) => commandRefs.current[index] = el}
           >
             <div className='flex items-center'>
-              <h1>{command.name}</h1>
+              <h1 className='text-sm'>{command.name}</h1>
               {command.usesCopied &&
-                <div className='text-xs px-2 bg-gray-700 align-middle h-5 ml-3 mt-1'>Copied</div>
+                <div className='text-xs px-1.5 py-0.5 bg-gray-700 align-middle h-5 ml-3 mt-1'>Copied</div>
               }
             </div>
             <div>
-              <h1>{index}</h1>
+              {/* <h1>{index}</h1> */}
             </div>
           </div>
         ))}
       </div>
-      <div className='flex flex-row justify-around w-full'>
+      <div className='flex flex-row justify-around w-full py-4 text-xs text-gray-600'>
         <div>
-          Ctrl+R
+          <span className='mr-2'>ctrl+r</span>
+          <span className='text-gray-400'>Refresh</span>
         </div>
         <div>
-          Alt+#
+          navigate with arrow keys
         </div>
-        <button type="button" onClick={handleLogout}>
+        <div>
+          <span className='mr-2'>esc</span>
+          <span className='text-gray-400'>Close</span>
+        </div>
+        <button className='text-gray-400' type="button" onClick={handleLogout}>
           Logout
         </button>
-        <button type="button" onClick={() => navigate('/history')}>
+        <button className='text-gray-400' type="button" onClick={() => navigate('/history')}>
           History
         </button>
       </div>

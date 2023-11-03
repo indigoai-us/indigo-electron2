@@ -97,7 +97,7 @@ const createTray = () => {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show App',
-      accelerator: 'CommandOrControl+Alt+I',
+      accelerator: 'Alt+I',
       click: () => {
         if (mainWindow === null) createWindow()
       }
@@ -132,6 +132,8 @@ const createWindow = async () => {
     width: 600,
     height: 400,
     icon: getAssetPath('IndigoLogoSmall1.png'),
+    // visibleOnAllWorkspaces: true,
+    // alwaysOnTop: true,
     // resizable: false,
     frame: false,
     webPreferences: {
@@ -140,7 +142,12 @@ const createWindow = async () => {
         : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
   });
-
+   // Add the event listener here
+   mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.key.toLowerCase() === 'escape') {
+      mainWindow && mainWindow.close();
+    }
+  });
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
@@ -187,7 +194,7 @@ app.on('window-all-closed', () => {
 });
 
 const registerGlobalShortcut = () => {
-  const ret = globalShortcut.register('CommandOrControl+Alt+I', () => {
+  const ret = globalShortcut.register('Alt+I', () => {
     if (mainWindow === null) createWindow()
     if (mainWindow !== null) mainWindow.show();
   })
@@ -197,14 +204,14 @@ const registerGlobalShortcut = () => {
   }
 }
 
-const appFolder = path.dirname(process.execPath)
-const updateExe = path.resolve(appFolder, '..', 'Update.exe')
-const exeName = path.basename(process.execPath)
+// const appFolder = path.dirname(process.execPath)
+// const updateExe = path.resolve(appFolder, '..', 'Update.exe')
+// const exeName = path.basename(process.execPath)
 
-app.setLoginItemSettings({
-  openAtLogin: true,
-  openAsHidden: true,
-})
+// app.setLoginItemSettings({
+//   openAtLogin: true,
+//   openAsHidden: true,
+// })
 
 app
   .whenReady()
