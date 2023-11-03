@@ -5,6 +5,9 @@ import logo from '../../assets/images/IndigoLogoHorizontal2.png';
 import './App.css'
 import createJob from '../utils/createJob';
 import getClip from '../utils/getClip';
+import IconArrowDown from './icons/IconArrowDown';
+import IconArrowUp from './icons/IconArrowUp';
+import IconEsc from './icons/IconEsc';
 
 const Commands = () => {
   const [baseCommands, setBaseCommands] = useState([]);
@@ -161,20 +164,27 @@ const Commands = () => {
       </div>
       <div className='flex flex-row justify-around w-full py-4 text-xs text-gray-600'>
         <div>
-          <span className='mr-2'>ctrl+r</span>
+          <span className='mr-2 text-gray-300'>
+          {window.navigator.userAgent.includes('Mac') ? '⌘+r' : 'ctrl+r'}
+          </span>
           <span className='text-gray-400'>Refresh</span>
         </div>
         <div>
-          navigate with arrow keys
+          <span className='mr-2 flex flex-row'>
+            <span><IconArrowDown /></span>
+            <span className='mr-2'><IconArrowUp /></span>
+            <span className='text-gray-400'>Navigate</span>
+          </span>
+
         </div>
-        <div>
-          <span className='mr-2'>esc</span>
+        <div className='flex flex-row'>
+          <span className='mr-2'><IconEsc/></span>
           <span className='text-gray-400'>Close</span>
         </div>
-        <button className='text-gray-400' type="button" onClick={handleLogout}>
+        <button className='text-gray-300' type="button" onClick={handleLogout}>
           Logout
         </button>
-        <button className='text-gray-400' type="button" onClick={() => navigate('/history')}>
+        <button className='text-gray-300' type="button" onClick={() => navigate('/history')}>
           History
         </button>
       </div>

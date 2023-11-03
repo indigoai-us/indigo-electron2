@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css'
 import { useLocation, useNavigate } from 'react-router-dom';
 import createJob from '../utils/createJob';
+import IconBack from './icons/IconBack';
 
 const Inputs = ({command}: any) => {
   const location = useLocation();
@@ -45,7 +46,23 @@ const Inputs = ({command}: any) => {
     const job = await createJob({command});
     navigate('/job',{state: job})
   }
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+        submitJob();
+      }
+      if (event.key === 'ArrowLeft' && event.ctrlKey) {
+        navigate(-1);
+      }
+    };
 
+    window.addEventListener('keydown', handler);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('keydown', handler);
+    };
+  }, [navigate]); // Add navigate to the dependency array
   return (
     <div className='flex flex-grow flex-col overflow-auto h-screen px-6 py-6'>
 
@@ -66,6 +83,7 @@ const Inputs = ({command}: any) => {
                 list={input._id}
                 onChange={(e) => updateInput(e, input._id)}
                 className='flex items-center gap-2.5 self-stretch border py-1.5 px-2 rounded-md border-solid text-sm input-field outline-none bg-gray-900 border-gray-800'
+                autoFocus={key === 0} // Add this line
               />
               <datalist id={input._id}>
                 {input.options.map((option: any) =>
@@ -95,11 +113,13 @@ const Inputs = ({command}: any) => {
         >
           Generate
         </button>
-        <div className='flex flex-row justify-around w-full text-xs text-gray-600 mb-5'>ctrl+enter</div>
-        <div onClick={() => navigate(-1)} className='inline-block text-gray-600 cursor-pointer'>
+        <div className='flex flex-row justify-around w-full text-xs text-gray-600 mb-5'>
+          {window.navigator.userAgent.includes('Mac') ? '⌘+return' : 'ctrl+enter'}
+        </div>
+        <div onClick={() => navigate(-1)} className=' text-gray-600 cursor-pointer flex flex-row items-center'>
 
-          <span className='mr-2'>←</span>
-          <span className='text-gray-400'>Back</span>
+          <span className='mr-2'><IconBack/></span>
+          <span className='text-gray-400 text-xs'>Back</span>
 
         </div>
       </div>

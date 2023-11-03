@@ -1,6 +1,7 @@
 module.exports = {
   content: ["./app/src/**/*.{html,jsx}"],
   theme: {
+    extend: {
     colors: {
       gray:{
         500: '#A4A4C2',
@@ -22,6 +23,7 @@ module.exports = {
         900: "#2C0971",
       },
     },
+  },
   },
   variants: {},
   plugins: [],
