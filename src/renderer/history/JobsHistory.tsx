@@ -1,10 +1,11 @@
 'use client';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import HistoryRow from "./HistoryRow";
 import { useNavigate } from "react-router-dom";
 import { API, Auth } from "aws-amplify";
 import '../App.css'
 import IconBack from "../icons/IconBack";
+import { useAppStore } from "../../../lib/store";
 
 const dayMap: {[key: number]: string} = {
   1: 'SUN',
@@ -33,52 +34,50 @@ const monthMap: {[key: number]: string} = {
 
 const JobsHistory = () => {
   const [loading, setLoading] = useState(false);
-  const [jobs, setJobs] = useState<any>([]);
   const navigate = useNavigate();
-
-  const getJobs = async () => {
-    const url = process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8080'
-    : 'https://indigo-api-dev.diffuze.ai';
-
-    try {
-      const user = await Auth.currentAuthenticatedUser();
-      console.log('user2: ', user.attributes.sub);
-
-      const jobs = await API.get('be1', '/jobs?grouped=true&createdBy='+user.attributes.sub, {
-        headers: {
-          custom_header: `Bearer ${user?.signInUserSession?.accessToken?.jwtToken}`, // get jwtToken
-        },
-      }).catch((error: any) => console.log(error.response));
-
-      const {data} = jobs;
-
-      const newJobs = data.map((job: any) => {
-        const day = dayMap[job._id.dayOfWeek];
-        const month = monthMap[job._id.month];
-        const formattedDate = `${day} ${month} ${job._id.dayOfMonth}`;
-        return {...job, formattedDate};
-      })
-
-      console.log('newJobs', newJobs);
-
-      setJobs(newJobs);
-      return data;
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { jobs, fetchJobs } = useAppStore()
+  const [localJobs, setLocalJobs] = useState<any>([]);
 
   useEffect(() => {
-    const gotJobs = getJobs();
-  },[])
+    fetchJobs()
+  }, [])
+
+  useEffect(() => {
+
+    const newJobs = jobs.map((job: any) => {
+      const day = dayMap[job._id.dayOfWeek];
+      const month = monthMap[job._id.month];
+      const formattedDate = `${day} ${month} ${job._id.dayOfMonth}`;
+      return {...job, formattedDate};
+    })
+
+    console.log('newJobs', newJobs);
+
+    setLocalJobs(newJobs);
+
+  }, [jobs])
+
+  const handleKeyPress = useCallback((event: any) => {
+    if(event.altKey && event.key === 'ArrowLeft') {
+      console.log('backspace');
+      navigate(-1);
+    }
+  }, []);
+
+  useEffect(() => {
+    // attach the event listener
+    document.addEventListener('keydown', handleKeyPress);
+
+    // remove the event listener
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleKeyPress]);
 
   return (
     <div className="p-4 flex flex-col h-screen" style={{width: '100%'}}>
       <div className="flex-grow" style={{overflowY: 'scroll'}}>
-      {jobs.map((job: any, key: number) => {
+      {localJobs.map((job: any, key: number) => {
         return (
           <div key={key}>
             <div className="text-gray-300 text-xs pl-2 my-2">

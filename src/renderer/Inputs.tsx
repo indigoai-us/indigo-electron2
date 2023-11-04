@@ -1,19 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './App.css'
 import { useLocation, useNavigate } from 'react-router-dom';
 import createJob from '../utils/createJob';
 import IconBack from './icons/IconBack';
 
-const Inputs = ({command}: any) => {
+const Inputs = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [inputs, setInputs] = useState([]);
   const [copied, setCopied] = useState('');
+  const [command, setCommand] = useState<any>(null);
 
   useEffect(() => {
     console.log('command: ', location.state);
     setInputs(location.state.inputs);
     setCopied(location.state.copied);
+    setCommand(location.state);
     window.electron.ipcRenderer.send(
       'window-resize',
       600,  // width
@@ -21,6 +23,23 @@ const Inputs = ({command}: any) => {
 
     )
   }, [location]);
+
+  const handleKeyPress = useCallback((event: any) => {
+    if(event.altKey && event.key === 'ArrowLeft') {
+      console.log('backspace');
+      navigate(-1);
+    }
+  }, []);
+
+  useEffect(() => {
+    // attach the event listener
+    document.addEventListener('keydown', handleKeyPress);
+
+    // remove the event listener
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [handleKeyPress]);
 
   const updateInput = (e: any, id: any) => {
     const newInputs : any = inputs.map((input: any) => {
@@ -68,7 +87,7 @@ const Inputs = ({command}: any) => {
 
       {/* Recipe Name */}
       <div>
-        <span className="text-md mr-2">Recipe Name</span>
+        <span className="text-md mr-2">{command?.name}</span>
         <span className='text-xs px-1.5 py-0.5 bg-gray-700 align-middle uppercase'>Clipboard</span>
       </div>
 

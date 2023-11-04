@@ -8,40 +8,55 @@ import getClip from '../utils/getClip';
 import IconArrowDown from './icons/IconArrowDown';
 import IconArrowUp from './icons/IconArrowUp';
 import IconEsc from './icons/IconEsc';
+import { useAppStore } from '../../lib/store';
 
 const Commands = () => {
   const [baseCommands, setBaseCommands] = useState([]);
-  const [commands, setCommands] = useState([]);
+  // const [commands, setCommands] = useState([]);
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const navigate = useNavigate();
   const commandRefs = useRef<(HTMLDivElement | null)[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const { commands, fetchCommands, jobs, fetchJobs } = useAppStore()
+  const [localCommands, setLocalCommands] = useState(commands);
+
+  useEffect(() => {
+    if(commands.length === 0) {
+      fetchCommands()
+    }
+    setLocalCommands(commands)
+  }, [commands])
+
+  useEffect(() => {
+    if(jobs.length === 0) {
+      fetchJobs()
+    }
+  }, [jobs])
 
   useEffect(() => {
     inputRef.current && inputRef.current.focus();
   }, []);
 
-  const getCommands = async () => {
+  // const getCommands = async () => {
 
-    try {
-      const user = await Auth.currentAuthenticatedUser();
-      const recipes = await API.get('be1', '/recipes', {
-        headers: {
-          custom_header: `Bearer ${user?.signInUserSession?.accessToken?.jwtToken}`, // get jwtToken
-        },
-      }).catch((error: any) => console.log(error.response));
-      console.log('recipes: ', recipes);
-      setBaseCommands(recipes.data);
-      setCommands(recipes.data);
-    } catch (error) {
-      console.log('error signing in', error);
-    }
-  }
+  //   try {
+  //     const user = await Auth.currentAuthenticatedUser();
+  //     const recipes = await API.get('be1', '/recipes', {
+  //       headers: {
+  //         custom_header: `Bearer ${user?.signInUserSession?.accessToken?.jwtToken}`, // get jwtToken
+  //       },
+  //     }).catch((error: any) => console.log(error.response));
+  //     console.log('recipes: ', recipes);
+  //     setBaseCommands(recipes.data);
+  //     setCommands(recipes.data);
+  //   } catch (error) {
+  //     console.log('error signing in', error);
+  //   }
+  // }
 
   useEffect(() => {
-    getCommands();
     window.electron.ipcRenderer.send(
       'window-resize',
       600, // height
@@ -57,7 +72,7 @@ const Commands = () => {
       command && runCommand(command);
     }
     if(event.ctrlKey && event.key === 'r') {
-      getCommands();
+      fetchCommands();
     }
     if(event.key === 'Enter') {
       const command = commands[highlightedIndex];
@@ -65,7 +80,7 @@ const Commands = () => {
     }
     if(event.key === 'ArrowDown') {
       setHighlightedIndex((prevIndex) => {
-        const newIndex = prevIndex >= 0 ? Math.min(prevIndex + 1, commands.length - 1) : 0;
+        const newIndex = prevIndex >= 0 ? Math.min(prevIndex + 1, localCommands.length - 1) : 0;
         commandRefs.current[newIndex]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         return newIndex;
       });
@@ -92,10 +107,14 @@ const Commands = () => {
   }, [handleKeyPress]);
 
   useEffect(() => {
-    const filteredCommands = search ? baseCommands.filter((command: any) => {
-      return command.name.toLowerCase().includes(search.toLowerCase());
-    }) : baseCommands;
-    setCommands(filteredCommands);
+    if(search === '') {
+      setLocalCommands(commands);
+    } else {
+      const filteredCommands = search ? commands.filter((command: any) => {
+        return command.name.toLowerCase().includes(search.toLowerCase());
+      }) : baseCommands;
+      setLocalCommands(filteredCommands);
+    }
   }, [search]);
 
   const runCommand = async (command: any) => {
@@ -142,7 +161,7 @@ const Commands = () => {
       </div>
       {/* Command List */}
       <div className="grow overflow-auto w-full p-2 h-full command-list">
-        {commands.map((command: any, index: number) => (
+        {localCommands.map((command: any, index: number) => (
           <div
             key={command.id}
             id={command._id}
