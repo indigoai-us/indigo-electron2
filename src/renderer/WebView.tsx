@@ -22,6 +22,7 @@ const WebView = () => {
     <div>
       {url &&
         <iframe
+          allow="clipboard-read; clipboard-write"
           title='WebView'
           src={url}
           height={580}
