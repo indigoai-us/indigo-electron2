@@ -43,7 +43,6 @@ body {
 }
 
 .historyrow:hover :nth-child(3) {
-  display: block;
 }
 .command {
   transition: background-color 0.2s ease;

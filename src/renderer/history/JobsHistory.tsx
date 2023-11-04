@@ -4,6 +4,7 @@ import HistoryRow from "./HistoryRow";
 import { useNavigate } from "react-router-dom";
 import { API, Auth } from "aws-amplify";
 import '../App.css'
+import IconBack from "../icons/IconBack";
 
 const dayMap: {[key: number]: string} = {
   1: 'SUN',
@@ -55,7 +56,7 @@ const JobsHistory = () => {
       const newJobs = data.map((job: any) => {
         const day = dayMap[job._id.dayOfWeek];
         const month = monthMap[job._id.month];
-        const formattedDate = `${day} ${month} ${job._id.dayOfMonth}, ${job._id.year}`;
+        const formattedDate = `${day} ${month} ${job._id.dayOfMonth}`;
         return {...job, formattedDate};
       })
 
@@ -75,12 +76,13 @@ const JobsHistory = () => {
   },[])
 
   return (
-    <div style={{overflow: 'scroll', height: '100vh', width: '100%'}}>
+    <div className="p-4 flex flex-col h-screen" style={{width: '100%'}}>
+      <div className="flex-grow" style={{overflowY: 'scroll'}}>
       {jobs.map((job: any, key: number) => {
         return (
           <div key={key}>
-            <div className="text-zinc-500 text-xs pl-2" style={{ marginTop: 20}}>
-              <div>{job.formattedDate}</div>
+            <div className="text-gray-300 text-xs pl-2 my-2">
+              <div className="text-gray-600 ">{job.formattedDate}</div>
               <div>{job.count}</div>
             </div>
             {job.jobs.map((j: any, key: number) => {
@@ -95,7 +97,15 @@ const JobsHistory = () => {
           </div>
         )
       })}
-      <div style={{color: '#fff'}} onClick={()=> navigate(-1)}>Back</div>
+      </div>
+      <div className="h-auto pt-2">
+        <div onClick={() => navigate(-1)} className=' text-gray-600 cursor-pointer flex flex-row items-center'>
+
+          <span className='mr-2'><IconBack/></span>
+          <span className='text-gray-400 text-xs'>Back</span>
+
+        </div>
+      </div>
     </div>
   );
 }

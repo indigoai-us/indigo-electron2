@@ -9,7 +9,7 @@ import './App.css'
 import Commands from './Commands';
 import Inputs from './Inputs';
 import WebView from './WebView';
-import JobsHistory from './history/jobsHistory';
+import JobsHistory from './history/JobsHistory';
 
 Amplify.configure({ ...config });
 
@@ -59,7 +59,7 @@ export default function App() {
   }, []);
 
   return (
-    <div className='px-2'>
+    <div>
     <Router>
       <Routes>
         <Route path='/' element={<PrivateRoute/>}>

@@ -31,16 +31,19 @@ const HistoryRow = (props: HistoryRowProps) => {
 
   return (
     <div
-      className="historyrow flex items-center py-4 pl-4 group border-b border-b-solid border-b-1 border-b-slate-600"
+      className="historyrow flex items-center pl-2 pr-4 group hover:bg-gray-800 transition-all"
     >
-      <div className="text-sm cursor-default w-1/6 mr-5 flex-none">{getTime(createdAt)}</div>
-      <div className="flex flex-col w-2/3 mr-2">
-        <div className="text-xs text-indigo-500 cursor-default">{name}</div>
-        <div className="cursor-default text-sm">{truncate(lastMessage, 80)}</div>
+      <div className="text-sm font-normal cursor-default w-20 mr-5">{getTime(createdAt)}</div>
+      <div className="flex border-r border-solid border-indigo-500 h-20 mr-8 relative">
+        <div className="w-2.5 h-2.5 bg-transparent border border-solid border-gray-300 rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
       </div>
-      <div className="flex flex-col flex-none w-1/6">
+      <div className="flex flex-col w-2/3 mr-2 py-1.5">
+        <div className="text-sm font-semibold cursor-default mb-1">{name}</div>
+        <div className="cursor-default text-xs font-normal mr-5">{truncate(lastMessage, 90)}</div>
+      </div>
+      <div className="flex flex-col flex-none w-1/8">
       <span
-        className="group-hover:inline-flex py-1 px-4 bg-zinc-800 hover:bg-indigo-600 rounded-md text-sm cursor-pointer"
+        className="opacity-0 transition-all w-auto group-hover:opacity-100 py-1 px-4 bg-gray-800  border border-solid border-gray-700 text-center rounded-md text-xs cursor-pointer"
         onClick={openJob}
       >
         Restore
