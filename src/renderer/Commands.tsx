@@ -19,7 +19,7 @@ const Commands = () => {
   const navigate = useNavigate();
   const commandRefs = useRef<(HTMLDivElement | null)[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { commands, fetchCommands } = useAppStore()
+  const { commands, fetchCommands, jobs, fetchJobs } = useAppStore()
   const [localCommands, setLocalCommands] = useState(commands);
 
   useEffect(() => {
@@ -28,6 +28,12 @@ const Commands = () => {
     }
     setLocalCommands(commands)
   }, [commands])
+
+  useEffect(() => {
+    if(jobs.length === 0) {
+      fetchJobs()
+    }
+  }, [jobs])
 
   useEffect(() => {
     inputRef.current && inputRef.current.focus();
