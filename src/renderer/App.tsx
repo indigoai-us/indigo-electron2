@@ -10,6 +10,7 @@ import Commands from './Commands';
 import Inputs from './Inputs';
 import WebView from './WebView';
 import JobsHistory from './history/JobsHistory';
+import Job from './Job';
 
 Amplify.configure({ ...config });
 
@@ -69,7 +70,7 @@ export default function App() {
           <Route path="/inputs" element={<Inputs />} />
         </Route>
         <Route path='/job' element={<PrivateRoute/>}>
-          <Route path="/job" element={<WebView />} />
+          <Route path="/job" element={<Job />} />
         </Route>
         <Route path='/history' element={<PrivateRoute/>}>
           <Route path="/history" element={<JobsHistory />} />
