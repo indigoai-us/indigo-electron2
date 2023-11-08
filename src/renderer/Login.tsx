@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Auth, API } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/IndigoLogoHorizontal2.png';
@@ -10,6 +10,13 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginIncorrect, setLoginIncorrect] = useState(false);
   const navigate = useNavigate();
+  const emailRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (emailRef.current) {
+      emailRef.current.focus();
+    }
+  }, []);
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
@@ -50,6 +57,7 @@ const Login = () => {
             Email
           </label>
           <input
+            ref={emailRef}
             type="email"
             name="email"
             onChange={(e) => setEmail(e.target.value)}
