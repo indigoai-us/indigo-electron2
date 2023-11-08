@@ -10,8 +10,8 @@ const Job = () => {
   useEffect(() => {
     window.electron.ipcRenderer.send(
       'window-resize',
-      900, // height
-      600  // width
+      1080, // height
+      768  // width
     )
   }, []);
 
@@ -39,9 +39,7 @@ const Job = () => {
           id={location.state.id}
         />
       }
-      <div onClick={() => navigate(-1)} className='fixed bottom-1 left-2 text-white-500 cursor-pointer'>
-        Go Back
-      </div>
+
     </div>
   );
 };

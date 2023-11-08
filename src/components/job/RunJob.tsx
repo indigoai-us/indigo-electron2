@@ -4,6 +4,8 @@ import Message from './Message';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import IconBack from '../../renderer/icons/IconBack';
+import IconHistory from '../../renderer/icons/IconHistory';
 
 export const runtime = 'edge';
 
@@ -151,14 +153,14 @@ export default function RunJob({id}: any) {
   }
 
   return (
-    <main className="main">
+    <main className="main flex flex-col h-screen overflow-x-hidden">
       {/* <button onClick={getJob}>
         Get Initial Job
       </button> */}
       {/* <div className = {styles.originalPrompt}>
         {originalPrompt}
       </div> */}
-      <div className="cloud">
+      <div className="cloud flex-grow overflow-y-auto">
         <div
           ref={messageListRef}
           className="messagelist"
@@ -179,8 +181,8 @@ export default function RunJob({id}: any) {
 
       <div className="center">
 
-        <div className="cloudform">
-          <form onSubmit={onSubmit}>
+        <div className="cloudform px-4">
+          <form className='relative' onSubmit={onSubmit}>
             <input
               disabled = {loading}
               autoFocus = {false}
@@ -188,13 +190,13 @@ export default function RunJob({id}: any) {
               placeholder="Ask..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="textarea"
+              className="textarea w-full py-3 px-4 bg-gray-800  rounded-lg"
               ref = {textAreaRef}
             />
             <button
               type = "submit"
               disabled = {loading}
-              className="generatebutton"
+              className=" top-4 right-4 absolute"
             >
               <svg
                 viewBox='0 0 20 20'
@@ -209,7 +211,16 @@ export default function RunJob({id}: any) {
         <ToastContainer />
 
       </div>
-
+      <div className="flex flex-row">
+      <div onClick={() => navigate(-1)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
+          <span className='mr-2 w-auto'><IconBack/></span>
+          <span className='text-gray-400 text-xs'>Back</span>
+      </div>
+      <div onClick={() => navigate('/history')} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+          <span className='mr-2 w-auto'><IconHistory/></span>
+          <span className='text-gray-400 text-xs'>History</span>
+      </div>
+      </div>
     </main>
   );
 }
