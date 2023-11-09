@@ -93,7 +93,7 @@ let tray: Tray | null = null;
 const createTray = () => {
   const icon = getAssetPath('IndigoLogoSmall1.png')
   const trayicon = nativeImage.createFromPath(icon)
-  tray = new Tray(trayicon.resize({width: 50}))
+  tray = new Tray(trayicon.resize({width: 16}))
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show App',
