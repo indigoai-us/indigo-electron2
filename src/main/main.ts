@@ -131,6 +131,7 @@ const createWindow = async () => {
     show: false,
     width: 600,
     height: 400,
+    transparent: true,
     icon: getAssetPath('icon.ico'),// Set the icon here
     // visibleOnAllWorkspaces: true,
     // alwaysOnTop: true,
