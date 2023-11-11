@@ -182,7 +182,7 @@ const Commands = () => {
         ))}
       </div>
       <div className='flex flex-row justify-around w-full py-4 text-xs text-gray-600'>
-        <div>
+        <div onClick={() => fetchCommands()} className='cursor-pointer'>
           <span className='mr-2 text-gray-300'>
           {window.navigator.userAgent.includes('Mac') ? '⌘+r' : 'ctrl+r'}
           </span>
