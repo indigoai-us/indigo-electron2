@@ -9,6 +9,7 @@ import IconArrowDown from './icons/IconArrowDown';
 import IconArrowUp from './icons/IconArrowUp';
 import IconEsc from './icons/IconEsc';
 import { useAppStore } from '../../lib/store';
+import IconHistory from './icons/IconHistory';
 
 const Commands = () => {
   const [baseCommands, setBaseCommands] = useState([]);
@@ -119,10 +120,10 @@ const Commands = () => {
 
   const runCommand = async (command: any) => {
     const clipContents = await getClip();
-    if(clipContents === '') {
-      setError('Clipboard is empty');
-      return;
-    }
+    // if(clipContents === '') {
+    //   setError('Clipboard is empty');
+    //   return;
+    // }
     if(command.inputs.length > 0) {
       navigate('/inputs',{state: {...command, copied: clipContents}})
     } else {
@@ -203,8 +204,9 @@ const Commands = () => {
         <button className='text-gray-300' type="button" onClick={handleLogout}>
           Logout
         </button>
-        <button className='text-gray-300' type="button" onClick={() => navigate('/history')}>
-          History
+        <button className='text-gray-300 flex flex-row align-middle' type="button" onClick={() => navigate('/history')}>
+        <span className='mr-1'><IconHistory/></span>
+          <span className='text-gray-400'>History</span>
         </button>
       </div>
     </div>

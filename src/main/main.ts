@@ -93,7 +93,7 @@ let tray: Tray | null = null;
 const createTray = () => {
   const icon = getAssetPath('IndigoLogoSmall1.png')
   const trayicon = nativeImage.createFromPath(icon)
-  tray = new Tray(trayicon.resize({width: 50}))
+  tray = new Tray(trayicon.resize({width: 16}))
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show App',
@@ -131,7 +131,7 @@ const createWindow = async () => {
     show: false,
     width: 600,
     height: 400,
-    icon: getAssetPath('IndigoLogoSmall1.png'),
+    icon: getAssetPath('icon.ico'),// Set the icon here
     // visibleOnAllWorkspaces: true,
     // alwaysOnTop: true,
     // resizable: false,
@@ -216,6 +216,9 @@ const registerGlobalShortcut = () => {
 app
   .whenReady()
   .then(() => {
+    if (app.dock) { // Check if dock is available (macOS)
+      app.dock.hide();
+    }
     createWindow();
     registerGlobalShortcut();
     app.on('activate', () => {

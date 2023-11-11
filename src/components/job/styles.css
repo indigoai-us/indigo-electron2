@@ -1,8 +1,4 @@
 .main {
-  display: block;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
   /* padding: 0rem;
   position: absolute;
   top: 0;
@@ -17,19 +13,12 @@
 }
 
 .cloudform {
-  position: relative;
+  /* position: relative; */
 }
 
 .textarea {
   position: relative;
   resize: none;
-  font-size: 14px;
-  padding: 1rem 2rem 1rem 2rem;
-  width: 100vw;
-  border: rgba(72,71,80,0.8) 1px solid;
-  border-radius: 0.5rem;
-  background: #161617;
-  color: #DCD9F1;
   outline: none;
 }
 
@@ -43,8 +32,6 @@
 
 .generatebutton {
   position: absolute;
-  top: 0.87rem;
-  right: 1rem;
   color: rgb(165, 162, 162);
   background: none;
   padding: 0.3rem;
@@ -114,12 +101,9 @@
 }
 
 .usermessage {
-  background: #333341;
-  padding: 1.5rem;
-  color: #DCD9F1;
-  font-size: 14px;
   position: relative;
   margin-bottom: 10px;
+  box-shadow: rgba(150, 129, 175, 0.1) 0px 0px 200px 0px inset;
 }
 
 .usermessagewaiting{
@@ -144,12 +128,10 @@
 }
 
 .apimessage {
-  background: #1c1b21;
-  padding: 1.5rem;
-  color: #DCD9F1;
+
   animation: fadein 0.5s;
-  font-size: 14px;
   position: relative;
+  box-shadow: rgba(66, 54, 77, 0.1) 0px 0px 400px 0px inset;
 }
 
 @keyframes fadein {
@@ -163,7 +145,6 @@
 
 .markdownanswer {
   line-height: 1.75;
-  font-size: 15px;
 }
 
 .markdownanswer a:hover {
@@ -172,14 +153,12 @@
 
 .markdownanswer a {
   color: #16bed7;
-  font-weight: 500;
 }
 
 .markdownanswer code {
-  color: #15cb19;
-  font-weight:300;
   white-space: pre-wrap !important;
   font-family: 'Inter', sans-serif;
+  font-weight: 300;
 
 }
 
@@ -199,43 +178,12 @@
 
 
 .center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 59px;
-  position: absolute;
-  bottom: 10px;
-  /* padding: 2rem 0; */
-  flex-direction: column;
 }
 
 .cloud {
-  width: 100vw;
-  height: 100vh;
-  padding-bottom: 69px;
-  display: flex;
-  flex: 1;
-  justify-content: center;
 }
 
-.cloud ::-webkit-scrollbar {
-  /* width: 6px; */
-  width: 9px;
-  background: transparent; /* make scrollbar transparent */
-  height: 5px;
-  z-index: 100;
-}
 
-.cloud ::-webkit-scrollbar-thumb {
-  background: #343245;
-  /* border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px; */
-  border-radius: 6px;
-}
-
-.cloud ::-webkit-scrollbar-thumb:hover {
-  background: #3e3b55;
-}
 
 .originalPrompt {
   width: 100vw;
