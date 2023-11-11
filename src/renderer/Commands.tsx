@@ -124,10 +124,13 @@ const Commands = () => {
     //   setError('Clipboard is empty');
     //   return;
     // }
-    if(command.inputs.length > 0) {
-      navigate('/inputs',{state: {...command, copied: clipContents}})
+
+    const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
+
+    if(newCommand.inputs.length > 0) {
+      navigate('/inputs',{state: {...newCommand, copied: clipContents}})
     } else {
-      const job = await createJob({command});
+      const job = await createJob({command: newCommand});
       console.log('job: ', job);
 
       navigate('/job',{state: job})

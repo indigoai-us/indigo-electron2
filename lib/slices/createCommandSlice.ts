@@ -3,6 +3,7 @@ import { Auth } from "aws-amplify";
 import { StateCreator } from "zustand";
 
 export interface Command {
+    inputs: any;
     name: string;
     _id: string;
     usesCopied: boolean;
