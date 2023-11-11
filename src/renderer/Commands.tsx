@@ -120,10 +120,10 @@ const Commands = () => {
 
   const runCommand = async (command: any) => {
     const clipContents = await getClip();
-    if(clipContents === '') {
-      setError('Clipboard is empty');
-      return;
-    }
+    // if(clipContents === '') {
+    //   setError('Clipboard is empty');
+    //   return;
+    // }
     if(command.inputs.length > 0) {
       navigate('/inputs',{state: {...command, copied: clipContents}})
     } else {
