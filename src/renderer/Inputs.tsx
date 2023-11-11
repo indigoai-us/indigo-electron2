@@ -24,22 +24,22 @@ const Inputs = () => {
     )
   }, [location]);
 
-  const handleKeyPress = useCallback((event: any) => {
-    if(event.altKey && event.key === 'ArrowLeft') {
-      console.log('backspace');
-      navigate(-1);
-    }
-  }, []);
+  // const handleKeyPress = useCallback((event: any) => {
+  //   if(event.altKey && event.key === 'ArrowLeft') {
+  //     console.log('backspace');
+  //     navigate(-1);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    // attach the event listener
-    document.addEventListener('keydown', handleKeyPress);
+  // useEffect(() => {
+  //   // attach the event listener
+  //   document.addEventListener('keydown', handleKeyPress);
 
-    // remove the event listener
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [handleKeyPress]);
+  //   // remove the event listener
+  //   return () => {
+  //     document.removeEventListener('keydown', handleKeyPress);
+  //   };
+  // }, [handleKeyPress]);
 
   const updateInput = (e: any, id: any) => {
     const newInputs : any = inputs.map((input: any) => {
