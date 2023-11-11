@@ -3,6 +3,7 @@ import { Auth, API } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/IndigoLogoHorizontal2.png';
 import './App.css'
+import { useAppStore } from '../../lib/store';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +11,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginIncorrect, setLoginIncorrect] = useState(false);
   const navigate = useNavigate();
+  const { fetchCommands } = useAppStore()
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
@@ -27,6 +29,7 @@ const Login = () => {
     try {
       await Auth.signIn(email, password).then((user: any) => {
         console.log('user: ', user);
+        fetchCommands();
         navigate('/');
         setIsLoading(false);
         return user;
