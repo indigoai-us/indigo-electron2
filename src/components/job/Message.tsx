@@ -69,7 +69,7 @@ const Message = (props: MessageProps) => {
           },
           onclose() {
             console.log('onclose');
-            setOutput((o) => o === '' ? 'I\'m sorry, it appears that something has gone wrong. This is generally due to token limitations. Please resubmit your Recipe request.' : o);
+            setOutput((o) => o === '' ? 'I\'m sorry, it appears that something has gone wrong. This is generally due to token limitations. Please resubmit your Command request.' : o);
           },
           onerror(ev) {
             console.log('onerror error', ev);
