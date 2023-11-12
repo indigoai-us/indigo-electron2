@@ -3,7 +3,7 @@ import { Auth } from "aws-amplify";
 import { StateCreator } from "zustand";
 
 export interface Command {
-    inputs: any;
+    data: any;
     name: string;
     _id: string;
     usesCopied: boolean;
@@ -19,7 +19,7 @@ export const createCommandSlice: StateCreator<CommandSlice> = (set) => ({
     commands: [],
     fetchCommands: async () => {
       const user = await Auth.currentAuthenticatedUser();
-      const commandsData = await API.get('be1', '/recipes', {
+      const commandsData = await API.get('be1', '/commands', {
         headers: {
           custom_header: `Bearer ${user.signInUserSession.idToken.jwtToken}`, // get jwtToken
         },

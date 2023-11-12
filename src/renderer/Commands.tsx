@@ -44,14 +44,14 @@ const Commands = () => {
 
   //   try {
   //     const user = await Auth.currentAuthenticatedUser();
-  //     const recipes = await API.get('be1', '/recipes', {
+  //     const commands = await API.get('be1', '/commands', {
   //       headers: {
   //         custom_header: `Bearer ${user?.signInUserSession?.accessToken?.jwtToken}`, // get jwtToken
   //       },
   //     }).catch((error: any) => console.log(error.response));
-  //     console.log('recipes: ', recipes);
-  //     setBaseCommands(recipes.data);
-  //     setCommands(recipes.data);
+  //     console.log('commands: ', commands);
+  //     setBaseCommands(commands.data);
+  //     setCommands(commands.data);
   //   } catch (error) {
   //     console.log('error signing in', error);
   //   }
@@ -127,8 +127,8 @@ const Commands = () => {
 
     const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
 
-    if(newCommand.inputs.length > 0) {
-      navigate('/inputs',{state: {...newCommand, copied: clipContents}})
+    if(newCommand.data.length > 0) {
+      navigate('/data',{state: {...newCommand, copied: clipContents}})
     } else {
       const job = await createJob({command: newCommand});
       console.log('job: ', job);

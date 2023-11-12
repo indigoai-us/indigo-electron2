@@ -4,16 +4,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import createJob from '../utils/createJob';
 import IconBack from './icons/IconBack';
 
-const Inputs = () => {
+const CommandData = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [inputs, setInputs] = useState([]);
+  const [data, setData] = useState([]);
   const [copied, setCopied] = useState('');
   const [command, setCommand] = useState<any>(null);
 
   useEffect(() => {
     console.log('command: ', location.state);
-    setInputs(location.state.inputs);
+    setData(location.state.data);
     setCopied(location.state.copied);
     setCommand(location.state);
     window.electron.ipcRenderer.send(
@@ -41,22 +41,22 @@ const Inputs = () => {
   //   };
   // }, [handleKeyPress]);
 
-  const updateInput = (e: any, id: any) => {
-    const newInputs : any = inputs.map((input: any) => {
-      if(input._id === id) {
-        const optionExists = input.options.find((option: any) => option.value === e.target.value);
+  const updateData = (e: any, id: any) => {
+    const newData : any = data.map((d: any) => {
+      if(d._id === id) {
+        const optionExists = d.options.find((option: any) => option.value === e.target.value);
         console.log('optionExists: ', optionExists);
-        input.selectedOption = {
+        d.selectedOption = {
           id: optionExists ? optionExists._id : 'new',
           value: e.target.value
         }
-        input.value = e.target.value;
+        d.value = e.target.value;
       }
-      return input;
+      return d;
     });
-    console.log('newInputs: ', newInputs);
+    console.log('newData: ', newData);
 
-    setInputs(newInputs);
+    setData(newData);
   }
 
 
@@ -91,21 +91,21 @@ const Inputs = () => {
         <span className='text-xs px-1.5 py-0.5 bg-gray-700 align-middle uppercase'>Clipboard</span>
       </div>
 
-      {/* Inputs */}
+      {/* Data */}
       <div className='flex flex-col justify-start mt-2 flex-grow max-h-[100px] overflow-hidden'>
-        {inputs.map((input: any, key: number) => {
+        {data.map((d: any, key: number) => {
           return (
             <div className='flex flex-col mt-3' key={key}>
-              <label className='text-xs mb-1 '>{input.name}</label>
+              <label className='text-xs mb-1 '>{d.name}</label>
               <input
                 type="text"
-                list={input._id}
-                onChange={(e) => updateInput(e, input._id)}
+                list={d._id}
+                onChange={(e) => updateData(e, d._id)}
                 className='flex items-center gap-2.5 self-stretch border py-1.5 px-2 rounded-md border-solid text-sm input-field outline-none bg-gray-900 border-gray-800'
                 autoFocus={key === 0} // Add this line
               />
-              <datalist id={input._id}>
-                {input.options.map((option: any) =>
+              <datalist id={d._id}>
+                {d.options.map((option: any) =>
                   <option value={option.value}>{option.value}</option>
                 )}
               </datalist>
@@ -146,4 +146,4 @@ const Inputs = () => {
   );
 };
 
-export default Inputs;
+export default CommandData;
