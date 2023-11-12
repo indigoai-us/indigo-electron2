@@ -87,7 +87,7 @@ const JobsHistory = () => {
             {job.jobs.map((j: any, key: number) => {
               return <HistoryRow
                         id={j.id}
-                        name={j.recipe.name}
+                        name={j.command.name}
                         lastMessage={j.messages ? j.messages[j.messages.length - 1].data.content : null}
                         createdAt={j.createdAt}
                         key={key}

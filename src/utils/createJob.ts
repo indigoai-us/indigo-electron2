@@ -9,8 +9,8 @@ const createJob = async ({command}: any) => {
   console.log('copied', copied);
 
   const body = {
-    recipe: command._id,
-    inputs: command.inputs,
+    command: command._id,
+    data: command.data,
     prompt_frame: command.promptFrame,
     promptFrame: command.promptFrame,
     id: uuidv4(),
