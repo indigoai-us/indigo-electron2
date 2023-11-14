@@ -204,35 +204,14 @@ const registerGlobalShortcut = () => {
   }
 }
 
-const appFolder = path.dirname(process.execPath)
-const updateExe = path.resolve(appFolder, '..', 'Update.exe')
-const exeName = path.basename(process.execPath)
+// const appFolder = path.dirname(process.execPath)
+// const updateExe = path.resolve(appFolder, '..', 'Update.exe')
+// const exeName = path.basename(process.execPath)
 
 // app.setLoginItemSettings({
 //   openAtLogin: true,
 //   openAsHidden: true,
 // })
-
-function launchAtStartup() {
-  if (process.platform === "darwin") {
-    app.setLoginItemSettings({
-      openAtLogin: true,
-      openAsHidden: true
-    });
-  } else {
-    app.setLoginItemSettings({
-      openAtLogin: true,
-      openAsHidden: true,
-      path: updateExe,
-      args: [
-        "--processStart",
-        `"${exeName}"`,
-        "--process-start-args",
-        `"--hidden"`
-      ]
-    });
-  }
-}
 
 app
   .whenReady()
@@ -242,7 +221,7 @@ app
     }
     createWindow();
     registerGlobalShortcut();
-    if (!isDebug) launchAtStartup();
+    // if (!isDebug) launchAtStartup();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
