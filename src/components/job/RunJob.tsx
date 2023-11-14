@@ -190,7 +190,7 @@ export default function RunJob({id}: any) {
               placeholder="Ask..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="textarea w-full py-3 px-4 bg-gray-800  rounded-lg"
+              className="textarea w-full py-3 px-4 bg-gray-900 bg-opacity-40  rounded-lg"
               ref = {textAreaRef}
             />
             <button

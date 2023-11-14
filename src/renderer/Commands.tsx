@@ -22,6 +22,29 @@ const Commands = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { commands, fetchCommands, jobs, fetchJobs } = useAppStore()
   const [localCommands, setLocalCommands] = useState(commands);
+  const scrollDivRef = useRef<HTMLDivElement | null>(null);
+
+
+  useEffect(() => {
+    const scrollDiv = scrollDivRef.current;
+
+    let scrollTimeout: number;
+
+    const handleScroll = () => {
+      if (scrollDiv) {
+        scrollDiv.classList.add('show-scrollbar');
+        window.clearTimeout(scrollTimeout);
+        scrollTimeout = window.setTimeout(() => {
+          scrollDiv.classList.remove('show-scrollbar');
+        }, 1000);
+      }
+    };
+
+    if (scrollDiv) {
+      scrollDiv.addEventListener('scroll', handleScroll);
+      return () => scrollDiv.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
 
   useEffect(() => {
     if(commands.length === 0) {
@@ -126,9 +149,8 @@ const Commands = () => {
     // }
 
     const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
-    console.log('newCommand: ', newCommand);
-    if(newCommand.data.length > 0) {
 
+    if(newCommand.data.length > 0) {
       navigate('/data',{state: {...newCommand, copied: clipContents}})
     } else {
       const job = await createJob({command: newCommand});
@@ -150,7 +172,7 @@ const Commands = () => {
   }
 
   return (
-    <div className='flex flex-col items-center h-screen justify-between'>
+    <div className='flex flex-col items-center h-screen justify-between p-2'>
       {/* Input Field */}
       <div className='flex-none w-full'>
         <input
@@ -165,7 +187,7 @@ const Commands = () => {
         {error && <div className='text-red-500'>{error}</div>}
       </div>
       {/* Command List */}
-      <div className="grow overflow-auto w-full p-2 h-full command-list">
+      <div className="grow overflow-auto w-full p-2 h-full command-list" ref={scrollDivRef}>
         {localCommands.map((command: any, index: number) => (
           <div
             key={command.id}
