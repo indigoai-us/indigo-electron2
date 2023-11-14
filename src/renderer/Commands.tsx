@@ -126,8 +126,9 @@ const Commands = () => {
     // }
 
     const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
-
+    console.log('newCommand: ', newCommand);
     if(newCommand.data.length > 0) {
+
       navigate('/data',{state: {...newCommand, copied: clipContents}})
     } else {
       const job = await createJob({command: newCommand});
@@ -156,7 +157,7 @@ const Commands = () => {
           name="search"
           ref={inputRef}
           onChange={(e) => setSearch(e.target.value)}
-          className="block w-full px-4 py-2 mt-2 text-gray-300 bg-gray-950  outline-none"
+          className="block w-full px-4 py-2 mt-2 text-gray-300 bg-transparent outline-none"
           placeholder='Start typing to find a command...'
         />
       </div>
