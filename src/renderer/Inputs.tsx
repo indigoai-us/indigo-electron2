@@ -101,7 +101,7 @@ const Inputs = () => {
                 type="text"
                 list={input._id}
                 onChange={(e) => updateInput(e, input._id)}
-                className='flex items-center gap-2.5 self-stretch border py-1.5 px-2 rounded-md border-solid text-sm input-field outline-none bg-gray-900 border-gray-800'
+                className='flex items-center gap-2.5 self-stretch border py-1.5 px-2 rounded-md border-solid text-sm input-field outline-none bg-gray-900 border-gray-800 bg-opacity-40'
                 autoFocus={key === 0} // Add this line
               />
               <datalist id={input._id}>

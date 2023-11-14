@@ -132,8 +132,9 @@ const createWindow = async () => {
     width: 600,
     height: 400,
     transparent: true,
-    backgroundColor: '#00000000',
     vibrancy: 'under-window',
+    visualEffectState: 'active',
+    darkTheme: true,
     icon: getAssetPath('icon.ico'),// Set the icon here
     // visibleOnAllWorkspaces: true,
     // alwaysOnTop: true,

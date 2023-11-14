@@ -101,7 +101,7 @@ const CommandData = () => {
                 type="text"
                 list={d._id}
                 onChange={(e) => updateData(e, d._id)}
-                className='flex items-center gap-2.5 self-stretch border py-1.5 px-2 rounded-md border-solid text-sm input-field outline-none bg-gray-900 border-gray-800'
+                className='flex items-center gap-2.5 self-stretch border py-1.5 px-2 rounded-md border-solid text-sm input-field outline-none bg-gray-900 border-gray-800 bg-opacity-60'
                 autoFocus={key === 0} // Add this line
               />
               <datalist id={d._id}>
@@ -117,7 +117,7 @@ const CommandData = () => {
         <label className='text-xs mt-3 mb-1 text-white'>
           Clipboard
         </label>
-        <div className='text-gray-500 text-xs mb-5 bg-gray-800 py-2 px-2 overflow-hidden h-auto max-h-10'>
+        <div className='text-gray-700 text-xs mb-5 bg-gray-900 bg-opacity-40 py-2 px-2 overflow-hidden h-auto max-h-10'>
           {copied}
         </div>
       </div>

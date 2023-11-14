@@ -101,7 +101,7 @@ const Message = (props: MessageProps) => {
   return (
     <div
       key={index}
-      className={messageType === "user" && loading ? 'usermessagewaiting' : (messageType === "initial" || messageType === "api" || messageType === 'existing_api') ? "apimessage pt-4 pb-10 px-6 text-white text-sm" : "usermessage py-4 px-6 bg-gray-900 text-gray-500 italic text-sm"}
+      className={messageType === "user" && loading ? 'usermessagewaiting' : (messageType === "initial" || messageType === "api" || messageType === 'existing_api') ? "apimessage pt-4 pb-10 px-6 text-white text-sm" : "usermessage py-4 px-6 bg-gray-950 bg-opacity-60 text-gray-500 italic text-sm"}
     >
       {messageType === 'user' ? <img src = {usericon} alt = "User" width = "30" height = "30" className = "usericon" />
       : <img src = {indigosmall} alt = "AI" width = "30" height = "30" className = "boticon" />}
