@@ -9,6 +9,7 @@ import Commands from './Commands';
 import JobsHistory from './history/JobsHistory';
 import Job from './Job';
 import CommandData from './CommandData';
+import { log } from 'console';
 
 Amplify.configure({ ...config });
 
@@ -17,6 +18,16 @@ export default function App() {
     Auth.currentAuthenticatedUser()
       .then((user) => console.log({ user }))
       .catch((err) => console.log({ err }));
+  }, []);
+
+  useEffect(() => {
+    console.log('window.environment: ', window.electron.environment);
+    
+    if (window.electron.environment === 'darwin') {
+      document.body.classList.remove('windows');
+    } else {
+      document.body.classList.add('windows');
+    }
   }, []);
 
   return (
