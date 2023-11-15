@@ -9,7 +9,7 @@ import IconHistory from '../../renderer/icons/IconHistory';
 
 export const runtime = 'edge';
 
-export default function RunJob({id}: any) {
+export default function RunJob({id, openEnded}: any) {
   const [stream, setStream] = useState(true);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
@@ -62,6 +62,9 @@ export default function RunJob({id}: any) {
 
         setOriginalPrompt(prompt);
 
+        console.log('openEnded: ', openEnded);
+        
+
         if(newJob.messages) {
           const formattedMessages = newJob.messages.map((message: any, index: number) => {
             if(message.type==='human') {
@@ -81,7 +84,7 @@ export default function RunJob({id}: any) {
             }
           })
           setMessages(formattedMessages);
-        } else {
+        } else if (!openEnded) {
           const newApiMessage = {
             index: messages.length,
             input,
@@ -152,6 +155,12 @@ export default function RunJob({id}: any) {
     }
   }
 
+  useEffect(() => {
+    if (!loading) {
+      textAreaRef.current?.focus();
+    }
+  }, [loading]);
+
   return (
     <main className="main flex flex-col h-screen overflow-x-hidden">
       {/* <button onClick={getJob}>
@@ -184,6 +193,7 @@ export default function RunJob({id}: any) {
         <div className="cloudform px-4">
           <form className='relative' onSubmit={onSubmit}>
             <input
+              ref = {textAreaRef}
               disabled = {loading}
               autoFocus = {false}
               type="text"
@@ -191,7 +201,6 @@ export default function RunJob({id}: any) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="textarea w-full py-3 px-4 bg-gray-900 bg-opacity-40  rounded-lg"
-              ref = {textAreaRef}
             />
             <button
               type = "submit"

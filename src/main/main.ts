@@ -215,7 +215,7 @@ const registerGlobalShortcut = () => {
     })
   }
 
-  const chatRet = globalShortcut.register('Alt+C', () => {
+  const chatRet = globalShortcut.register('Alt+Shift+I', () => {
     if (mainWindow === null) {
       createWindowAndOpenChat();
     }
@@ -237,10 +237,10 @@ const registerGlobalShortcut = () => {
 // const updateExe = path.resolve(appFolder, '..', 'Update.exe')
 // const exeName = path.basename(process.execPath)
 
-// app.setLoginItemSettings({
-//   openAtLogin: true,
-//   openAsHidden: true,
-// })
+app.setLoginItemSettings({
+  openAtLogin: true,
+  // openAsHidden: true,
+})
 
 app
   .whenReady()
@@ -250,7 +250,6 @@ app
     }
     createWindow();
     registerGlobalShortcut();
-    // if (!isDebug) launchAtStartup();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.

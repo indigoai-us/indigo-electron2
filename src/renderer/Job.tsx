@@ -11,6 +11,7 @@ const Job = () => {
   const [id, setId] = useState(null);
   const { models, fetchModels } = useAppStore()
   const [localModels, setLocalModels] = useState(models);
+  const [openEnded, setOpenEnded] = useState(false);
 
   useEffect(() => {
     if(models.length === 0) {
@@ -48,9 +49,10 @@ const Job = () => {
           data: []
         }
         const job = await createJob({command: newCommand});
-        console.log('job: ', job);
+        // console.log('job: ', job);
         setId(job.id);
       }
+      setOpenEnded(true);
       handleNoId();
     }
 
@@ -78,6 +80,7 @@ const Job = () => {
       {id &&
         <RunJob
           id={id}
+          openEnded={openEnded}
         />
       }
 
