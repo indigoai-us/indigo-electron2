@@ -150,6 +150,8 @@ const Commands = () => {
 
     const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
 
+    console.log('newCommand: ', newCommand);
+
     if(newCommand.data.length > 0) {
       navigate('/data',{state: {...newCommand, copied: clipContents}})
     } else {

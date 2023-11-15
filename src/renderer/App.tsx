@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import { MemoryRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { Amplify, Auth, API } from 'aws-amplify';
 import config from '../aws-exports-with-auth';
 import Login from './Login';
@@ -9,11 +9,11 @@ import Commands from './Commands';
 import JobsHistory from './history/JobsHistory';
 import Job from './Job';
 import CommandData from './CommandData';
-import { log } from 'console';
 
 Amplify.configure({ ...config });
 
 export default function App() {
+
   useEffect(() => {
     Auth.currentAuthenticatedUser()
       .then((user) => console.log({ user }))
