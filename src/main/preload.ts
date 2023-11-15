@@ -6,6 +6,7 @@ export type Channel = 'ipc-example';
 export type ResizeChannel = 'window-resize';
 
 const electronHandler = {
+  environment: process.platform,
   ipcRenderer: {
     sendMessage(channel: Channel, ...args: unknown[]) {
       ipcRenderer.send(channel, ...args);
