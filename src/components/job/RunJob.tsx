@@ -53,9 +53,9 @@ export default function RunJob({id}: any) {
 
         let prompt = newJob.promptFrame ? newJob.promptFrame : newJob.prompt_frame;
 
-        newJob.inputs.forEach((input: any) => {
+        newJob.data.forEach((d: any) => {
           const objectKey = Object.keys(input)[0];
-          prompt = prompt.replace(`{${objectKey}}`, input[objectKey]);
+          prompt = prompt.replace(`{${objectKey}}`, d[objectKey]);
         });
 
         prompt = prompt.replace(`[copied]`, newJob.copied);

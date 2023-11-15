@@ -206,6 +206,31 @@ const registerGlobalShortcut = () => {
   if (!ret) {
     console.log('registration failed')
   }
+
+  const createWindowAndOpenChat = async  () => {
+    await createWindow();
+    console.log('creating window and opening chat...')
+    mainWindow?.once('ready-to-show', () => {
+      mainWindow?.webContents.send('open-chat')
+    })
+  }
+
+  const chatRet = globalShortcut.register('Alt+C', () => {
+    if (mainWindow === null) {
+      createWindowAndOpenChat();
+    }
+    if (mainWindow !== null) {
+      mainWindow.show();
+      mainWindow && mainWindow.webContents.send('open-chat')
+    }
+    if (mainWindow) {
+      mainWindow.webContents.send('open-chat')
+    }
+  })
+
+  if (!chatRet) {
+    console.log('registration for chat global shortcut failed')
+  }
 }
 
 // const appFolder = path.dirname(process.execPath)

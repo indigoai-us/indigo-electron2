@@ -53,9 +53,11 @@ const Message = (props: MessageProps) => {
         : 'https://2wmrri2cmh.us-east-1.awsapprunner.com';
 
         const body = JSON.stringify({
-          input: messageType === 'initial'? null: input,
+          input: messageType === 'initial'? null : input,
           job
         });
+        // console.log('message body: ', body);
+        
         await fetchEventSource(`${url}/webview_chat`, {
           method: 'POST',
           body,

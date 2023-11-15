@@ -3,6 +3,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 export type Channel = 'ipc-example';
+export type Chat = 'open-chat';
 export type ResizeChannel = 'window-resize';
 
 const electronHandler = {
@@ -14,7 +15,7 @@ const electronHandler = {
     send(channel: ResizeChannel, ...args: unknown[]) {
       ipcRenderer.send(channel, ...args);
     },
-    on(channel: Channel, func: (...args: unknown[]) => void) {
+    on(channel: Chat, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
         func(...args);
       ipcRenderer.on(channel, subscription);
@@ -25,6 +26,9 @@ const electronHandler = {
     },
     once(channel: Channel, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
+    },
+    removeListener(channel: Chat, func: (...args: unknown[]) => void) {
+      ipcRenderer.removeListener(channel, func);
     },
   },
 };
