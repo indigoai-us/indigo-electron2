@@ -174,7 +174,7 @@ const Commands = () => {
   }
 
   return (
-    <div className='flex flex-col items-center h-screen justify-between p-2'>
+    <div className='main flex flex-col items-center h-screen justify-between p-2'>
       {/* Input Field */}
       <div className='flex-none w-full'>
         <input

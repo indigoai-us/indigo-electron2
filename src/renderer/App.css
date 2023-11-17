@@ -22,7 +22,11 @@ body {
   /* align-items: center; */
 }
 
-body.windows {
+/* body.windows {
+  background-color: rgba(10, 10, 14, 0.95);
+} */
+
+.main {
   background-color: rgba(10, 10, 14, 0.95);
 }
 

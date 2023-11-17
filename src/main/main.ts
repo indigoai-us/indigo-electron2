@@ -9,11 +9,13 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, desktopCapturer } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import fs from 'fs';
+import screenshot from 'screenshot-desktop';
 
 class AppUpdater {
   constructor() {
@@ -31,23 +33,33 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.on('resize-me-please', (event, arg) => {
-  mainWindow && mainWindow.setSize(600,400)
+ipcMain.on('take-screenshot', (event, dimens) => {
+  const {left, top, right, bottom, width, height} = dimens;
+
+  screenshot().then((img: any) => {
+    event.reply('screenshot-captured', img);
+    fs.writeFile('screenshot.png', img, (err) => {
+      if (err) throw err;
+      console.log('The screenshot has been saved!');
+    });
+  }).catch((err: any) => console.log('err: ', err));
+
+  
 })
 
-ipcMain.on('window-resize', (e, width, height) => {
+ipcMain.on('window-resize', (e, width, height, full) => {
   const primaryDisplay = screen.getPrimaryDisplay()
   let screenDimention = primaryDisplay.workAreaSize
   const w = screenDimention.width
   const h = screenDimention.height
 
-  const x = Math.round((w - width) / 2);
-  const y = Math.round((h - height) / 2);
+  const x = full ? 0 : Math.round((w - width) / 2);
+  const y = full ? 0 : Math.round((h - height) / 2);
 
 
   const windowSize = {
-    width: width,
-    height: height,
+    width: full ? w : width,
+    height: full ? h : height,
     x,
     y,
   }
@@ -230,6 +242,31 @@ const registerGlobalShortcut = () => {
 
   if (!chatRet) {
     console.log('registration for chat global shortcut failed')
+  }
+
+  const createWindowAndOpenOverlay = async  () => {
+    await createWindow();
+    console.log('creating window and opening overlay...')
+    mainWindow?.once('ready-to-show', () => {
+      mainWindow?.webContents.send('open-overlay')
+    })
+  }
+
+  const overlayRet = globalShortcut.register('Alt+Shift+O', () => {
+    if (mainWindow === null) {
+      createWindowAndOpenOverlay()
+    }
+    if (mainWindow !== null) {
+      mainWindow.show();
+      mainWindow.webContents.send('open-overlay')
+    }
+    if (mainWindow) {
+      mainWindow.webContents.send('open-overlay')
+    }
+  })
+  
+  if (!overlayRet) {
+    console.log('registration for overlay global shortcut failed')
   }
 }
 
