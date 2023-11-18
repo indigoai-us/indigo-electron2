@@ -149,7 +149,8 @@ const createWindow = async () => {
    // Add the event listener here
    mainWindow.webContents.on('before-input-event', (event, input) => {
     if (input.key.toLowerCase() === 'escape') {
-      mainWindow && mainWindow.close();
+      // mainWindow && mainWindow.close();
+      mainWindow && mainWindow.hide();
     }
   });
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -198,9 +199,24 @@ app.on('window-all-closed', () => {
 });
 
 const registerGlobalShortcut = () => {
+
+  const createWindowAndOpenCommands = async  () => {
+    if (mainWindow === null) await createWindow()
+    console.log('creating window and opening commands...')
+    mainWindow?.once('ready-to-show', async () => {
+      await mainWindow?.webContents.send('open-commands')
+      mainWindow?.show();
+    })
+  }
+
   const ret = globalShortcut.register('Alt+I', () => {
-    if (mainWindow === null) createWindow()
-    if (mainWindow !== null) mainWindow.show();
+    if (mainWindow === null) {
+      createWindowAndOpenCommands();
+    }
+    if (mainWindow !== null) {
+      mainWindow && mainWindow.webContents.send('open-commands')
+      mainWindow.show();
+    }
   })
 
   if (!ret) {
@@ -208,7 +224,7 @@ const registerGlobalShortcut = () => {
   }
 
   const createWindowAndOpenChat = async  () => {
-    await createWindow();
+    if (mainWindow === null) await createWindow()
     console.log('creating window and opening chat...')
     mainWindow?.once('ready-to-show', () => {
       mainWindow?.webContents.send('open-chat')
@@ -220,11 +236,8 @@ const registerGlobalShortcut = () => {
       createWindowAndOpenChat();
     }
     if (mainWindow !== null) {
-      mainWindow.show();
       mainWindow && mainWindow.webContents.send('open-chat')
-    }
-    if (mainWindow) {
-      mainWindow.webContents.send('open-chat')
+      mainWindow.show();
     }
   })
 
