@@ -97,7 +97,6 @@
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
-    "@types/screenshot-desktop": "^1.12.3",
     "aws-amplify": "^5.3.11",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
@@ -186,7 +185,6 @@
   "build": {
     "productName": "IndigoAI",
     "appId": "com.electron.IndigoAI",
-    "copywrite": "Copyright © year IndigoAI",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
