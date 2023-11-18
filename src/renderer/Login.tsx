@@ -49,7 +49,7 @@ const Login = () => {
   };
 
   return (
-    <div className='flex flex-col items-center justify-center h-screen'>
+    <div className='main flex flex-col items-center justify-center h-screen'>
       <img width="200" alt="IndigoAI" src={logo} />
       <form className="mt-6" onSubmit={handleLogin}>
         <div className="mb-4">
