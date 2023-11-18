@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import './overlay.css'
 import Selecto from "react-selecto";
-import screenshot from 'screenshot-desktop';
+import { Storage } from 'aws-amplify';
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from 'react-router-dom';
 
 const ScreenOverlay = () => {
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
@@ -22,10 +25,22 @@ const ScreenOverlay = () => {
   }
 
   useEffect(() => {
-    const handleScreenshot = (screenshot: any) => {
-      // Do something with the screenshot
-      console.log('screenshot: ', screenshot);
+    const handleScreenshot = async (screenshot: any) => {
       
+      let imgData = new Blob([screenshot], { type: 'image/png' });
+      const filename = uuidv4()+'.png';
+      const newFile = new File([imgData], filename, { type: "image/png" })
+
+      try {
+        await Storage.put(filename, newFile, {
+          contentType: "image/png", // contentType is optional
+        });
+        navigate('/job',{state: {img: filename}})
+
+      } catch (error) {
+        console.log("Error uploading file: ", error);
+      }
+
     };
   
     const removeListener = window.electron.ipcRenderer.onScreenshotCaptured(handleScreenshot);

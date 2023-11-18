@@ -5,6 +5,17 @@ import RunJob from '../components/job/RunJob';
 import createJob from '../utils/createJob';
 import { useAppStore } from '../../lib/store';
 
+const baseCommand = {
+  tokens: 4096,
+  temperature: 0.5,
+  systemMessage: "",
+  promptFrame: "{copied}",
+  rawPromptFrame: "@[{copied}](copied)",
+  showSystemMessage: false,
+  usesCopied: true,
+  data: []
+}
+
 const Job = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,6 +40,19 @@ const Job = () => {
 
     if(location?.state?.id) {
       setId(location.state.id);
+    } else if (location?.state?.img) {
+      const handleImg = async () => {
+        const newCommand = {
+          ...baseCommand,
+          name: "Vision Chat",
+          model: '65591b9c057cde6fb32d111a'
+        }
+        const job = await createJob({command: newCommand});
+        console.log('job: ', job);
+        setId(job.id);
+      }
+      setOpenEnded(true);
+      handleImg();
     } else {
       const handleNoId = async () => {
 
@@ -36,17 +60,10 @@ const Job = () => {
         console.log('gpt4Model: ', gpt4Model);
 
         const newCommand = {
+          ...baseCommand,
           name: "General Chat",
           // model: gpt4Model ? gpt4Model._id : '65554737057cde6fb32d1119',
-          model: '65554737057cde6fb32d1119',
-          tokens: 4096,
-          temperature: 0.5,
-          systemMessage: "",
-          promptFrame: "I am starting an open ended chat session. For your first response, please only state that you are the new GPT 4 Turbo model and ask what you can do to help me. {copied}",
-          rawPromptFrame: "I am starting an open ended chat session. For your first response, please only state that you are the new GPT 4 Turbo model and ask what you can do to help me. @[{copied}](copied)",
-          showSystemMessage: false,
-          usesCopied: true,
-          data: []
+          model: '65554737057cde6fb32d1119'
         }
         const job = await createJob({command: newCommand});
         // console.log('job: ', job);
