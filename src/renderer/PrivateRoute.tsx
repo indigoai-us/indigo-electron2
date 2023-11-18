@@ -32,5 +32,18 @@ export default function PrivateRoute({ children, ...rest }: any) {
     };
   }, [navigate]);
 
+  useEffect(() => {
+    const openCommands = () => {
+      console.log('opening commands...');
+      navigate('/');
+    };
+  
+    window.electron.ipcRenderer.on('open-commands', openCommands);
+  
+    return () => {
+      window.electron.ipcRenderer.removeListener('open-commands', openCommands);
+    };
+  }, [navigate]);
+
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 }
