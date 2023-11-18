@@ -36,12 +36,8 @@ ipcMain.on('ipc-example', async (event, arg) => {
 ipcMain.on('take-screenshot', (event, dimens) => {
   const {left, top, right, bottom, width, height} = dimens;
 
-  screenshot().then((img: any) => {
+  screenshot({format: 'png'}).then((img: any) => {
     event.reply('screenshot-captured', img);
-    fs.writeFile('screenshot.png', img, (err) => {
-      if (err) throw err;
-      console.log('The screenshot has been saved!');
-    });
   }).catch((err: any) => console.log('err: ', err));
 
   
