@@ -196,6 +196,8 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
+app.commandLine.appendSwitch('wm-window-animations-disabled');
+
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -219,11 +221,14 @@ const registerGlobalShortcut = () => {
 
   const ret = globalShortcut.register('Alt+I', () => {
     if (mainWindow === null) {
+      log.info('creating window and opening commands...')
       createWindowAndOpenCommands();
     }
     if (mainWindow !== null) {
+      console.log('opening commands...');
       mainWindow && mainWindow.webContents.send('open-commands')
       mainWindow.show();
+      
     }
   })
 
