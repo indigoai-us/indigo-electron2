@@ -49,4 +49,5 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+developer-id-application.p12
 electron-builder.env
