@@ -35,17 +35,21 @@ ipcMain.on('ipc-example', async (event, arg) => {
 
 ipcMain.on('take-screenshot', (event, dimens) => {
   const {left, top, right, bottom, width, height} = dimens;
+  const primaryDisplay = screen.getPrimaryDisplay()
+  let screenDimention = primaryDisplay.size
+  const screenWidth = screenDimention.width
+  const screenHeight = screenDimention.height
 
   screenshot({format: 'png'}).then((img: any) => {
-    event.reply('screenshot-captured', img);
+    event.reply('screenshot-captured', {img, dimens, screenWidth, screenHeight});
   }).catch((err: any) => console.log('err: ', err));
 
   
 })
 
-ipcMain.on('window-resize', (e, width, height, full) => {
+ipcMain.on('window-resize', (e, width, height, full, toEdges) => {
   const primaryDisplay = screen.getPrimaryDisplay()
-  let screenDimention = primaryDisplay.workAreaSize
+  let screenDimention = toEdges ? primaryDisplay.size : primaryDisplay.workAreaSize;
   const w = screenDimention.width
   const h = screenDimention.height
 
@@ -185,6 +189,9 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
+
+  mainWindow.setKiosk(true);
+  // mainWindow.setFullScreen(true);
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
