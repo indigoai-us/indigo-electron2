@@ -23,6 +23,7 @@ const Job = () => {
   const { models, fetchModels } = useAppStore()
   const [localModels, setLocalModels] = useState(models);
   const [openEnded, setOpenEnded] = useState(false);
+  const [command, setCommand] = useState<any | null>(null);
 
   useEffect(() => {
     if(models.length === 0) {
@@ -38,39 +39,12 @@ const Job = () => {
       768  // width
     )
 
-    if(location?.state?.id) {
+    console.log('location.state: ', location.state);
+    if(location?.state?.command) {      
+      setCommand(location.state.command);
+    }
+    if(location?.state?.id) {      
       setId(location.state.id);
-    } else if (location?.state?.img) {
-      const handleImg = async () => {
-        const newCommand = {
-          ...baseCommand,
-          name: "Vision Chat",
-          model: '65591b9c057cde6fb32d111a'
-        }
-        const job = await createJob({command: newCommand});
-        console.log('job: ', job);
-        setId(job.id);
-      }
-      setOpenEnded(true);
-      handleImg();
-    } else {
-      const handleNoId = async () => {
-
-        const gpt4Model = localModels.find(model => model.nameCode === "gpt-4-32k");
-        console.log('gpt4Model: ', gpt4Model);
-
-        const newCommand = {
-          ...baseCommand,
-          name: "General Chat",
-          // model: gpt4Model ? gpt4Model._id : '65554737057cde6fb32d1119',
-          model: '65554737057cde6fb32d1119'
-        }
-        const job = await createJob({command: newCommand});
-        // console.log('job: ', job);
-        setId(job.id);
-      }
-      setOpenEnded(true);
-      handleNoId();
     }
 
   }, []);
@@ -94,10 +68,10 @@ const Job = () => {
 
   return (
     <div>
-      {id &&
+      {(command || id) &&
         <RunJob
+          command={command}
           id={id}
-          openEnded={openEnded}
         />
       }
 

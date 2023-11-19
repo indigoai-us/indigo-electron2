@@ -143,22 +143,13 @@ const Commands = () => {
 
   const runCommand = async (command: any) => {
     const clipContents = await getClip();
-    // if(clipContents === '') {
-    //   setError('Clipboard is empty');
-    //   return;
-    // }
 
     const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
-
-    console.log('newCommand: ', newCommand);
 
     if(newCommand.data.length > 0) {
       navigate('/data',{state: {...newCommand, copied: clipContents}})
     } else {
-      const job = await createJob({command: newCommand});
-      console.log('job: ', job);
-
-      navigate('/job',{state: job})
+      navigate('/job',{state: {command: newCommand}})
     }
 
   }

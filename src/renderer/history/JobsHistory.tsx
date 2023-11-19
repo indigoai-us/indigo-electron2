@@ -39,6 +39,12 @@ const JobsHistory = () => {
   const [localJobs, setLocalJobs] = useState<any>([]);
 
   useEffect(() => {
+    window.electron.ipcRenderer.send(
+      'window-resize',
+      1080, // height
+      768  // width
+    )
+
     fetchJobs()
   }, [])
 
