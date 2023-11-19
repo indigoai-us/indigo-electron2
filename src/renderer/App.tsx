@@ -10,6 +10,7 @@ import JobsHistory from './history/JobsHistory';
 import Job from './Job';
 import CommandData from './CommandData';
 import ScreenOverlay from './ScreenOverlay';
+import VisionJob from './VisionJob';
 
 Amplify.configure({ ...config });
 
@@ -49,6 +50,9 @@ export default function App() {
           </Route>
           <Route path='/overlay' element={<PrivateRoute/>}>
             <Route path="/overlay" element={<ScreenOverlay />} />
+          </Route>
+          <Route path='/vision-job' element={<PrivateRoute/>}>
+            <Route path="/vision-job" element={<VisionJob />} />
           </Route>
           <Route path="/login" element={<Login />} />
         </Routes>
