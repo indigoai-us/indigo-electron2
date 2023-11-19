@@ -3,8 +3,8 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 export type Channel = 'ipc-example';
-export type Chat = 'open-chat' | 'open-commands';
-export type ResizeChannel = 'window-resize';
+export type Chat = 'open-chat' | 'open-overlay';
+export type ResizeChannel = 'window-resize' | 'take-screenshot';
 
 const electronHandler = {
   environment: process.platform,
@@ -29,6 +29,14 @@ const electronHandler = {
     },
     removeListener(channel: Chat, func: (...args: unknown[]) => void) {
       ipcRenderer.removeListener(channel, func);
+    },
+    onScreenshotCaptured(func: (screenshot: Electron.DesktopCapturerSource) => void) {
+      const subscription = (_event: IpcRendererEvent, screenshot: Electron.DesktopCapturerSource) => func(screenshot);
+      ipcRenderer.on('screenshot-captured', subscription);
+  
+      return () => {
+        ipcRenderer.removeListener('screenshot-captured', subscription);
+      };
     },
   },
 };

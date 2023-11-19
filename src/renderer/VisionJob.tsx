@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import './App.css'
 import { useLocation, useNavigate } from 'react-router-dom';
 import RunJob from '../components/job/RunJob';
-import createJob from '../utils/createJob';
 import { useAppStore } from '../../lib/store';
 
 const baseCommand = {
@@ -16,14 +15,14 @@ const baseCommand = {
   data: []
 }
 
-const Job = () => {
+const VisionJob = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [id, setId] = useState(null);
   const { models, fetchModels } = useAppStore()
   const [localModels, setLocalModels] = useState(models);
   const [openEnded, setOpenEnded] = useState(false);
-  const [command, setCommand] = useState<any | null>(null);
+  const [command, setCommand] = useState<any>(null);
+  const [img, setImg] = useState<any>(location?.state?.img);
 
   useEffect(() => {
     if(models.length === 0) {
@@ -39,13 +38,17 @@ const Job = () => {
       768  // width
     )
 
-    console.log('location.state: ', location.state);
-    if(location?.state?.command) {      
-      setCommand(location.state.command);
+    const handleImg = async () => {
+      const newCommand = {
+        ...baseCommand,
+        name: "Vision Chat",
+        model: '65591b9c057cde6fb32d111a',
+        vision: true
+      }
+      setCommand(newCommand);
+      setImg(location?.state?.img);
     }
-    if(location?.state?.id) {      
-      setId(location.state.id);
-    }
+    handleImg();
 
   }, []);
 
@@ -68,10 +71,11 @@ const Job = () => {
 
   return (
     <div>
-      {(command || id) &&
+      {command && img &&
         <RunJob
           command={command}
-          id={id}
+          openEnded={openEnded}
+          img={img}
         />
       }
 
@@ -79,4 +83,4 @@ const Job = () => {
   );
 };
 
-export default Job;
+export default VisionJob;
