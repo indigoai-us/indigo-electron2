@@ -9,6 +9,7 @@ import Commands from './Commands';
 import JobsHistory from './history/JobsHistory';
 import Job from './Job';
 import CommandData from './CommandData';
+import OpenChatJob from './OpenChatJob';
 
 Amplify.configure({ ...config });
 
@@ -42,6 +43,9 @@ export default function App() {
           </Route>
           <Route path='/job' element={<PrivateRoute/>}>
             <Route path="/job" element={<Job />} />
+          </Route>
+          <Route path='/open-chat' element={<PrivateRoute/>}>
+            <Route path="/open-chat" element={<OpenChatJob />} />
           </Route>
           <Route path='/history' element={<PrivateRoute/>}>
             <Route path="/history" element={<JobsHistory />} />

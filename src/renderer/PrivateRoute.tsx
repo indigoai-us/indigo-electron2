@@ -22,7 +22,7 @@ export default function PrivateRoute({ children, ...rest }: any) {
   useEffect(() => {
     const openSpecificComponent = () => {
       console.log('opening chat...');
-      navigate('/job');
+      navigate('/open-chat');
     };
   
     window.electron.ipcRenderer.on('open-chat', openSpecificComponent);
