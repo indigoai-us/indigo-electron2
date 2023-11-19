@@ -111,7 +111,11 @@ const createTray = () => {
       label: 'Show App',
       accelerator: 'Alt+I',
       click: () => {
-        if (mainWindow === null) createWindow()
+        if (mainWindow === null) {
+          createWindow()
+        } else {
+          mainWindow.show()
+        }
       }
     },
     {
@@ -123,7 +127,11 @@ const createTray = () => {
   ])
 
   tray.on('click', () => {
-    if (mainWindow === null) createWindow()
+    if (mainWindow === null) {
+      createWindow()
+    } else {
+      mainWindow.show()
+    }
   })
 
   tray.setToolTip('IndigoAI')
@@ -161,7 +169,8 @@ const createWindow = async () => {
    // Add the event listener here
    mainWindow.webContents.on('before-input-event', (event, input) => {
     if (input.key.toLowerCase() === 'escape') {
-      mainWindow && mainWindow.close();
+      // mainWindow && mainWindow.close();
+      mainWindow && mainWindow.hide();
     }
   });
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -202,6 +211,8 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
+app.commandLine.appendSwitch('wm-window-animations-disabled');
+
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -213,9 +224,27 @@ app.on('window-all-closed', () => {
 });
 
 const registerGlobalShortcut = () => {
+
+  const createWindowAndOpenCommands = async  () => {
+    if (mainWindow === null) await createWindow()
+    console.log('creating window and opening commands...')
+    mainWindow?.once('ready-to-show', async () => {
+      await mainWindow?.webContents.send('open-commands')
+      mainWindow?.show();
+    })
+  }
+
   const ret = globalShortcut.register('Alt+I', () => {
-    if (mainWindow === null) createWindow()
-    if (mainWindow !== null) mainWindow.show();
+    if (mainWindow === null) {
+      log.info('creating window and opening commands...')
+      createWindowAndOpenCommands();
+    }
+    if (mainWindow !== null) {
+      console.log('opening commands...');
+      mainWindow && mainWindow.webContents.send('open-commands')
+      mainWindow.show();
+      
+    }
   })
 
   if (!ret) {
@@ -223,7 +252,7 @@ const registerGlobalShortcut = () => {
   }
 
   const createWindowAndOpenChat = async  () => {
-    await createWindow();
+    if (mainWindow === null) await createWindow()
     console.log('creating window and opening chat...')
     mainWindow?.once('ready-to-show', () => {
       mainWindow?.webContents.send('open-chat')
@@ -235,11 +264,8 @@ const registerGlobalShortcut = () => {
       createWindowAndOpenChat();
     }
     if (mainWindow !== null) {
-      mainWindow.show();
       mainWindow && mainWindow.webContents.send('open-chat')
-    }
-    if (mainWindow) {
-      mainWindow.webContents.send('open-chat')
+      mainWindow.show();
     }
   })
 

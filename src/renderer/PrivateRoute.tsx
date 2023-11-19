@@ -22,7 +22,7 @@ export default function PrivateRoute({ children, ...rest }: any) {
   useEffect(() => {
     const openSpecificComponent = () => {
       console.log('opening chat...');
-      navigate('/job');
+      navigate('/open-chat');
     };
   
     window.electron.ipcRenderer.on('open-chat', openSpecificComponent);
@@ -39,6 +39,19 @@ export default function PrivateRoute({ children, ...rest }: any) {
       window.electron.ipcRenderer.removeListener('open-overlay', openOverlayFunction);
     };
     
+  }, [navigate]);
+
+  useEffect(() => {
+    const openCommands = () => {
+      console.log('opening commands...');
+      navigate('/');
+    };
+  
+    window.electron.ipcRenderer.on('open-commands', openCommands);
+  
+    return () => {
+      window.electron.ipcRenderer.removeListener('open-commands', openCommands);
+    };
   }, [navigate]);
 
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
