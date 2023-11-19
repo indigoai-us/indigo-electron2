@@ -62,8 +62,8 @@ const Inputs = () => {
 
   const submitJob = async () => {
     const command = location.state;
-    const job = await createJob({command});
-    navigate('/job',{state: job})
+    // const job = await createJob({command});
+    navigate('/job',{state: command})
   }
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {

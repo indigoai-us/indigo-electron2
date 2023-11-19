@@ -7,104 +7,118 @@ import { useNavigate } from 'react-router-dom';
 import IconBack from '../../renderer/icons/IconBack';
 import IconHistory from '../../renderer/icons/IconHistory';
 import IconRefresh from '../../renderer/icons/IconRefresh';
+import createJob from '../../utils/createJob';
 
-export const runtime = 'edge';
-
-export default function RunJob({id, openEnded, resetChat}: any) {
+export default function RunJob({id, openEnded, resetChat, command}: any) {
   const [stream, setStream] = useState(true);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [gettingJob, setGettingJob] = useState(false);
   const [messages, setMessages] = useState<any>([]);
   const [job, setJob] = useState<any | null>(null);
   const [originalPrompt, setOriginalPrompt] = useState<string | null>(null);
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLInputElement>(null);
+  const [isOpenEnded, setIsOpenEnded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(id) {
-      getJob();
+    if(command || id) {
+      handleJob();
     }
-  }, [id]);
+  }, [command, id]);
+  
+  const getExistingJob = async (id: any) => {
+    const url = process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8080'
+    : 'https://indigo-api-dev.diffuze.ai';
 
-  const getJob = useCallback(
-    async () => {
+    try {
 
-      setGettingJob(true)
-      console.log('getJob id', id);
+      const res = await fetch(`${url}/jobs?id=`+id, {
+        method: 'GET'
+      });
+      const {data} = await res.json();
+      // console.log('job data', data[0]);
 
-      const url = process.env.NODE_ENV === 'development'
-            ? 'http://localhost:8080'
-            : 'https://indigo-api-dev.diffuze.ai';
-
-      try {
-        const res = await fetch(`${url}/jobs?id=`+id, {
-          method: 'GET'
-        });
-        const {data} = await res.json();
-        // console.log('job data', data[0]);
-
-        if(data[0]) {
-          setJob(data[0]);
-        }
-
-        const newJob = data[0];
-
-        let prompt = newJob.promptFrame ? newJob.promptFrame : newJob.prompt_frame;
-
-        newJob.data.forEach((d: any) => {
-          const objectKey = Object.keys(input)[0];
-          prompt = prompt.replace(`{${objectKey}}`, d[objectKey]);
-        });
-
-        prompt = prompt.replace(`[copied]`, newJob.copied);
-
-        setOriginalPrompt(prompt);
-
-        console.log('openEnded: ', openEnded);
-        
-
-        if(newJob.messages) {
-          const formattedMessages = newJob.messages.map((message: any, index: number) => {
-            if(message.type==='human') {
-              return {
-                index,
-                input: message.data.content,
-                messageType: 'user'
-              }
-            } else {
-              return {
-                index,
-                input: message.data.content,
-                messageType: 'existing_api',
-                id,
-                job: newJob
-              }
-            }
-          })
-          setMessages(formattedMessages);
-        } else if (!openEnded) {
-          const newApiMessage = {
-            index: messages.length,
-            input,
-            messageType: 'initial',
-            id,
-            job: data[0]
-          }
-
-          setMessages([...messages, newApiMessage]);
-        }
-
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setGettingJob(false);
+      if(data[0]) {
+        return data[0] ? data[0] : [];
+      } else {
+        setError('No job found with that id');
       }
-    },
-    [id]
-  );
+
+    } catch (e: any) {
+      console.error(e);
+    }
+
+  }
+
+  const handleJob = async () => {
+
+    try {
+
+      console.log('command: ', command);
+      
+      const newJob = id ? await getExistingJob(id) : await createJob({command});
+
+      setJob(newJob);
+
+      console.log('newJob', newJob);
+
+      if(!newJob.command._id) {
+        setIsOpenEnded(true);
+      }
+      
+      let prompt = newJob.promptFrame ? newJob.promptFrame : newJob.prompt_frame;
+
+      newJob.data.forEach((d: any) => {
+        const objectKey = Object.keys(input)[0];
+        prompt = prompt.replace(`{${objectKey}}`, d[objectKey]);
+      });
+
+      prompt = prompt.replace(`[copied]`, newJob.copied);
+
+      setOriginalPrompt(prompt);
+
+      console.log('openEnded: ', openEnded);
+      
+      if(newJob.messages) {
+        const formattedMessages = newJob.messages.map((message: any, index: number) => {
+          if(message.type==='human') {
+            return {
+              index,
+              input: message.data.content,
+              messageType: 'user'
+            }
+          } else {
+            return {
+              index,
+              input: message.data.content,
+              messageType: 'existing_api',
+              id,
+              job: newJob
+            }
+          }
+        })
+        setMessages(formattedMessages);
+      } else if (!openEnded) {
+        const newApiMessage = {
+          index: messages.length,
+          input,
+          messageType: 'initial',
+          id,
+          job: newJob
+        }
+
+        setMessages([...messages, newApiMessage]);
+      }
+
+    } catch (e: any) {
+      console.error(e);
+    }
+  }
 
   // Auto scroll chat to bottom
   useEffect(() => {
@@ -137,9 +151,11 @@ export default function RunJob({id, openEnded, resetChat}: any) {
         index: messages.length+1,
         input,
         messageType: 'api',
-        id,
+        id: id ? id : job.id,
         job
       }
+
+      console.log('newApiMessage', newApiMessage);
 
       setMessages([...messages, newUserMessage, newApiMessage]);
       setInput('');
@@ -232,7 +248,7 @@ export default function RunJob({id, openEnded, resetChat}: any) {
           <span className='mr-2 w-auto'><IconBack/></span>
           <span className='text-gray-400 text-xs'>Back</span>
       </div>
-      {resetChat &&
+      {isOpenEnded &&
         <div onClick={handleResetChat} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
           <span className='mr-2 w-auto'><IconRefresh/></span>
           <span className='text-gray-400 text-xs'>New Session</span>
