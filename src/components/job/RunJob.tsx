@@ -6,10 +6,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import IconBack from '../../renderer/icons/IconBack';
 import IconHistory from '../../renderer/icons/IconHistory';
+import IconRefresh from '../../renderer/icons/IconRefresh';
 
 export const runtime = 'edge';
 
-export default function RunJob({id, openEnded}: any) {
+export default function RunJob({id, openEnded, resetChat}: any) {
   const [stream, setStream] = useState(true);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
@@ -161,6 +162,12 @@ export default function RunJob({id, openEnded}: any) {
     }
   }, [loading]);
 
+  const handleResetChat = () => {
+    setMessages([]);
+    resetChat && resetChat();
+    textAreaRef.current?.focus();
+  }
+
   return (
     <main className="main flex flex-col h-screen overflow-x-hidden">
       {/* <button onClick={getJob}>
@@ -225,6 +232,12 @@ export default function RunJob({id, openEnded}: any) {
           <span className='mr-2 w-auto'><IconBack/></span>
           <span className='text-gray-400 text-xs'>Back</span>
       </div>
+      {resetChat &&
+        <div onClick={handleResetChat} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+          <span className='mr-2 w-auto'><IconRefresh/></span>
+          <span className='text-gray-400 text-xs'>New Session</span>
+        </div>  
+      }
       <div onClick={() => navigate('/history')} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
           <span className='mr-2 w-auto'><IconHistory/></span>
           <span className='text-gray-400 text-xs'>History</span>
