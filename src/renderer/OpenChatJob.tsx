@@ -12,6 +12,7 @@ const OpenChatJob = () => {
   const { models, fetchModels } = useAppStore()
   const [localModels, setLocalModels] = useState(models);
   const [openEnded, setOpenEnded] = useState(false);
+  const [command, setCommand] = useState<any | null>(null);
 
   useEffect(() => {
     if(models.length === 0) {
@@ -45,9 +46,7 @@ const OpenChatJob = () => {
         usesCopied: true,
         data: []
       }
-      const job = await createJob({command: newCommand});
-      // console.log('job: ', job);
-      setId(job.id);
+      setCommand(newCommand);
     }
 
     setOpenEnded(true);
@@ -93,9 +92,9 @@ const OpenChatJob = () => {
 
   return (
     <div>
-      {id &&
+      {command &&
         <RunJob
-          id={id}
+          command={command}
           openEnded={openEnded}
           resetChat={resetChat}
         />
