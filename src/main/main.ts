@@ -99,7 +99,11 @@ const createTray = () => {
       label: 'Show App',
       accelerator: 'Alt+I',
       click: () => {
-        if (mainWindow === null) createWindow()
+        if (mainWindow === null) {
+          createWindow()
+        } else {
+          mainWindow.show()
+        }
       }
     },
     {
@@ -111,7 +115,11 @@ const createTray = () => {
   ])
 
   tray.on('click', () => {
-    if (mainWindow === null) createWindow()
+    if (mainWindow === null) {
+      createWindow()
+    } else {
+      mainWindow.show()
+    }
   })
 
   tray.setToolTip('IndigoAI')
