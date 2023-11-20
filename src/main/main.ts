@@ -199,8 +199,11 @@ const createWindow = async () => {
     return { action: 'deny' };
   });
 
-  mainWindow.setKiosk(true);
-  // mainWindow.setFullScreen(true);
+  // mainWindow.setKiosk(true);
+
+  if (process.platform !== 'darwin') {
+    mainWindow.setFullScreen(true);
+  }
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
