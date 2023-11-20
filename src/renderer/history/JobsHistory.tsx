@@ -81,7 +81,7 @@ const JobsHistory = () => {
   }, [handleKeyPress]);
 
   return (
-    <div className="p-4 flex flex-col h-screen" style={{width: '100%'}}>
+    <div className="main p-4 flex flex-col h-screen" style={{width: '100%'}}>
       <div className="flex-grow" style={{overflowY: 'scroll'}}>
       {localJobs.map((job: any, key: number) => {
         return (
