@@ -11,7 +11,7 @@ type MessageProps = {
   index: number;
   messageType: string;
   id: string;
-  job: object;
+  job: any;
   setTopLevelLoading: any;
 };
 
@@ -56,9 +56,11 @@ const Message = (props: MessageProps) => {
           input: messageType === 'initial'? null : input,
           job
         });
-        // console.log('message body: ', body);
+        console.log('message body: ', body);
+
+        const endpoint = job.img ? 'vision_chat' : 'webview_chat';
         
-        await fetchEventSource(`${url}/webview_chat`, {
+        await fetchEventSource(`${url}/${endpoint}`, {
           method: 'POST',
           body,
           headers: { 'Content-Type': 'application/json' },

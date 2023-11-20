@@ -80,10 +80,15 @@ const ScreenOverlay = () => {
       const newFile = new File([newImgData], filename, { type: "image/png" })
 
       try {
-        await Storage.put(filename, newFile, {
+        const storedFile = await Storage.put(filename, newFile, {
           contentType: "image/png", // contentType is optional
         });
-        navigate('/vision-job',{state: {img: filename}})
+
+        const storedFileUrl = 'https://indigo-vision-images190143-dev.s3.amazonaws.com/public/'+storedFile.key;
+
+        console.log('storedFile: ', storedFileUrl);
+        
+        navigate('/vision-job',{state: {img: storedFileUrl}})
 
       } catch (error) {
         console.log("Error uploading file: ", error);

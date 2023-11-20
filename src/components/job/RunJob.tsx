@@ -8,8 +8,10 @@ import IconBack from '../../renderer/icons/IconBack';
 import IconHistory from '../../renderer/icons/IconHistory';
 import IconRefresh from '../../renderer/icons/IconRefresh';
 import createJob from '../../utils/createJob';
+import { Modal } from '../shadcn/modal';
+import IconImage from '../../renderer/icons/IconImage';
 
-export default function RunJob({id, openEnded, resetChat, command}: any) {
+export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   const [stream, setStream] = useState(true);
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState('');
@@ -61,7 +63,7 @@ export default function RunJob({id, openEnded, resetChat, command}: any) {
 
       console.log('command: ', command);
       
-      const newJob = id ? await getExistingJob(id) : await createJob({command});
+      const newJob = id ? await getExistingJob(id) : await createJob({command, img});
 
       setJob(newJob);
 
@@ -189,9 +191,6 @@ export default function RunJob({id, openEnded, resetChat, command}: any) {
       {/* <button onClick={getJob}>
         Get Initial Job
       </button> */}
-      {/* <div className = {styles.originalPrompt}>
-        {originalPrompt}
-      </div> */}
       <div className="cloud flex-grow overflow-y-auto">
         <div
           ref={messageListRef}
@@ -248,6 +247,12 @@ export default function RunJob({id, openEnded, resetChat, command}: any) {
           <span className='mr-2 w-auto'><IconBack/></span>
           <span className='text-gray-400 text-xs'>Back</span>
       </div>
+      {job?.img &&
+        <a href={job.img} target="_blank" className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+          <span className='mr-2 w-auto'><IconImage/></span>
+          <span className='text-gray-400 text-xs'>View Image</span>
+        </a>  
+      }
       {isOpenEnded &&
         <div onClick={handleResetChat} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
           <span className='mr-2 w-auto'><IconRefresh/></span>
