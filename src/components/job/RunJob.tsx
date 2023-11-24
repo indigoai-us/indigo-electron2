@@ -34,7 +34,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
       handleJob();
     }
   }, [command, id]);
-  
+
   const getExistingJob = async (id: any) => {
     const url = process.env.NODE_ENV === 'development'
     ? 'http://localhost:8080'
@@ -65,7 +65,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
     try {
 
       console.log('command: ', command);
-      
+
       const newJob = id ? await getExistingJob(id) : await createJob({command, img});
 
       setJob(newJob);
@@ -75,7 +75,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
       if(!newJob.command._id) {
         setIsOpenEnded(true);
       }
-      
+
       let prompt = newJob.promptFrame ? newJob.promptFrame : newJob.prompt_frame;
 
       newJob.data.forEach((d: any) => {
@@ -88,7 +88,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
       setOriginalPrompt(prompt);
 
       console.log('openEnded: ', openEnded);
-      
+
       if(newJob.messages) {
         const formattedMessages = newJob.messages.map((message: any, index: number) => {
           if(message.type==='human') {
@@ -245,19 +245,19 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
         </div>
         <div onClick={() => setChatLayout(!chatLayout)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'><IconBack/></span>
-            <span className='text-gray-400 text-xs'>Back</span>
+            <span className='text-gray-400 text-xs'>Layout</span>
         </div>
         {job?.img &&
           <a href={job.img} target="_blank" className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'><IconImage/></span>
             <span className='text-gray-400 text-xs'>View Image</span>
-          </a>  
+          </a>
         }
         {isOpenEnded &&
           <div onClick={handleResetChat} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'><IconRefresh/></span>
             <span className='text-gray-400 text-xs'>New Session</span>
-          </div>  
+          </div>
         }
         <div onClick={() => navigate('/history')} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'><IconHistory/></span>
