@@ -46,7 +46,7 @@ ipcMain.on('take-screenshot', (event, dimens) => {
     event.reply('screenshot-captured', {img, dimens, screenWidth, screenHeight});
   }).catch((err: any) => console.log('err: ', err));
 
-  
+
 })
 
 ipcMain.on('window-resize', (e, width, height, full, toEdges) => {
@@ -248,7 +248,7 @@ const registerGlobalShortcut = () => {
       console.log('opening commands...');
       mainWindow && mainWindow.webContents.send('open-commands')
       mainWindow.show();
-      
+
     }
   })
 
@@ -298,7 +298,7 @@ const registerGlobalShortcut = () => {
       mainWindow.webContents.send('open-overlay')
     }
   })
-  
+
   if (!overlayRet) {
     console.log('registration for overlay global shortcut failed')
   }
