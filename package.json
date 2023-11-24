@@ -1,6 +1,6 @@
 {
   "description": "Desktop launcher for IndigoAI",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "keywords": [
     "electron",
     "boilerplate",
@@ -249,7 +249,8 @@
     "publish": {
       "provider": "github",
       "owner": "indigoai-us",
-      "repo": "indigo-electron2"
+      "repo": "indigo-electron2",
+      "private": true
     },
     "nsis": {
       "oneClick": false,
