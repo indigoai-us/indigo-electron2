@@ -10,6 +10,8 @@ import IconRefresh from '../../renderer/icons/IconRefresh';
 import createJob from '../../utils/createJob';
 import { Modal } from '../shadcn/modal';
 import IconImage from '../../renderer/icons/IconImage';
+import JobChatLayout from './JobChatLayout';
+import JobPlaygroundLayout from './JobPlaygroundLayout';
 
 export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   const [stream, setStream] = useState(true);
@@ -24,6 +26,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLInputElement>(null);
   const [isOpenEnded, setIsOpenEnded] = useState(false);
+  const [chatLayout, setChatLayout] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -186,83 +189,80 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
     textAreaRef.current?.focus();
   }
 
+  const finishMessage = ({index, output}: any) => {
+    console.log('finishMessage index', index);
+    console.log('finishMessage output', output);
+
+    const newMessages = messages.map((message: any) => {
+      if(message.index === index) {
+        message.output = output;
+      }
+      return message;
+    })
+    setMessages(newMessages);
+  }
+
   return (
     <main className="main flex flex-col h-screen overflow-x-hidden">
-      {/* <button onClick={getJob}>
-        Get Initial Job
-      </button> */}
-      <div className="cloud flex-grow overflow-y-auto">
-        <div
-          ref={messageListRef}
-          className="messagelist"
-        >
-          {messages.map((message: any) => (
-            <Message
-              key={message.index}
-              input={message.input}
-              index={message.index}
-              messageType={message.messageType}
-              id={message.id}
-              job={message.job}
-              setTopLevelLoading={setLoading}
-            />
-          ))}
-        </div>
-      </div>
+      {chatLayout ?
+          <JobChatLayout
+            messageListRef = {messageListRef}
+            messages = {messages}
+            setLoading = {setLoading}
+            onSubmit = {onSubmit}
+            textAreaRef = {textAreaRef}
+            loading = {loading}
+            input = {input}
+            setInput = {setInput}
+            job = {job}
+            isOpenEnded = {isOpenEnded}
+            handleResetChat = {handleResetChat}
+            finishMessage = {finishMessage}
+          />
+        :
+          <JobPlaygroundLayout
+            messageListRef = {messageListRef}
+            messages = {messages}
+            setLoading = {setLoading}
+            onSubmit = {onSubmit}
+            textAreaRef = {textAreaRef}
+            loading = {loading}
+            input = {input}
+            setInput = {setInput}
+            job = {job}
+            isOpenEnded = {isOpenEnded}
+            handleResetChat = {handleResetChat}
+            finishMessage = {finishMessage}
+          />
+      }
 
-      <div className="center">
+      <ToastContainer />
 
-        <div className="cloudform px-4">
-          <form className='relative' onSubmit={onSubmit}>
-            <input
-              ref = {textAreaRef}
-              disabled = {loading}
-              autoFocus = {false}
-              type="text"
-              placeholder="Ask..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="textarea w-full py-3 px-4 bg-gray-900 bg-opacity-40  rounded-lg"
-            />
-            <button
-              type = "submit"
-              disabled = {loading}
-              className=" top-4 right-4 absolute"
-            >
-              <svg
-                viewBox='0 0 20 20'
-                xmlns='http://www.w3.org/2000/svg'
-                className="svgicon"
-              >
-                <path d='M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z'></path>
-              </svg>
-            </button>
-          </form>
-        </div>
-        <ToastContainer />
-
-      </div>
       <div className="flex flex-row">
-      <div onClick={() => navigate(-1)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
-          <span className='mr-2 w-auto'><IconBack/></span>
-          <span className='text-gray-400 text-xs'>Back</span>
-      </div>
-      {job?.img &&
-        <a href={job.img} target="_blank" className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
-          <span className='mr-2 w-auto'><IconImage/></span>
-          <span className='text-gray-400 text-xs'>View Image</span>
-        </a>  
-      }
-      {isOpenEnded &&
-        <div onClick={handleResetChat} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
-          <span className='mr-2 w-auto'><IconRefresh/></span>
-          <span className='text-gray-400 text-xs'>New Session</span>
-        </div>  
-      }
-      <div onClick={() => navigate('/history')} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
-          <span className='mr-2 w-auto'><IconHistory/></span>
-          <span className='text-gray-400 text-xs'>History</span>
-      </div>
+        <div onClick={() => navigate(-1)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
+            <span className='mr-2 w-auto'><IconBack/></span>
+            <span className='text-gray-400 text-xs'>Back</span>
+        </div>
+        <div onClick={() => setChatLayout(!chatLayout)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
+            <span className='mr-2 w-auto'><IconBack/></span>
+            <span className='text-gray-400 text-xs'>Back</span>
+        </div>
+        {job?.img &&
+          <a href={job.img} target="_blank" className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+            <span className='mr-2 w-auto'><IconImage/></span>
+            <span className='text-gray-400 text-xs'>View Image</span>
+          </a>  
+        }
+        {isOpenEnded &&
+          <div onClick={handleResetChat} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+            <span className='mr-2 w-auto'><IconRefresh/></span>
+            <span className='text-gray-400 text-xs'>New Session</span>
+          </div>  
+        }
+        <div onClick={() => navigate('/history')} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+            <span className='mr-2 w-auto'><IconHistory/></span>
+            <span className='text-gray-400 text-xs'>History</span>
+        </div>
       </div>
     </main>
   );
