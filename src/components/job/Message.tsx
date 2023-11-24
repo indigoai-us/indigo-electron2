@@ -13,10 +13,11 @@ type MessageProps = {
   id: string;
   job: any;
   setTopLevelLoading: any;
+  finishMessage: any;
 };
 
 const Message = (props: MessageProps) => {
-  const { input, index, messageType, id, job, setTopLevelLoading } = props;
+  const { input, index, messageType, id, job, setTopLevelLoading, finishMessage } = props;
   const [stream, setStream] = useState(true);
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState('');
@@ -31,6 +32,10 @@ const Message = (props: MessageProps) => {
       submitInput();
     }
   },[input])
+
+  const handleFinishOutput = async(index: any) => {
+    finishMessage({index, output});
+  }
 
   const submitInput = useCallback(
     async () => {
@@ -73,6 +78,7 @@ const Message = (props: MessageProps) => {
           },
           onclose() {
             console.log('onclose');
+            handleFinishOutput(index);
             setOutput((o) => o === '' ? 'I\'m sorry, it appears that something has gone wrong. This is generally due to token limitations. Please resubmit your Command request.' : o);
           },
           onerror(ev) {
