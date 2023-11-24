@@ -16,6 +16,8 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import fs from 'fs';
 import screenshot from 'screenshot-desktop';
+const config = require("dotenv");
+config.config();
 
 class AppUpdater {
   constructor() {
