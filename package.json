@@ -1,5 +1,6 @@
 {
-  "description": "A foundation for scalable desktop apps",
+  "description": "Desktop launcher for IndigoAI",
+  "version": "1.0.0",
   "keywords": [
     "electron",
     "boilerplate",
@@ -11,25 +12,25 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://getindigo.ai",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/indigoai-us/indigo-electron2"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/indigoai-us/indigo-electron2"
   },
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "IndigoAI",
+    "email": "therealstefan@gmail.com",
+    "url": "https://getindigo.ai"
   },
   "contributors": [
     {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
+      "name": "Stefan Johnson",
+      "email": "therealstefan@gmail.com",
+      "url": "https://github.com/johnsonfamily1234"
     }
   ],
   "main": "./src/main/main.ts",
@@ -40,7 +41,7 @@
     "build:renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.renderer.prod.ts",
     "postinstall": "ts-node .erb/scripts/check-native-dep.js && electron-builder install-app-deps && npm run build:dll",
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
-    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never && npm run build:dll",
+    "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish always && npm run build:dll",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run start:renderer",
     "start:main": "cross-env NODE_ENV=development electronmon -r ts-node/register/transpile-only .",
@@ -99,6 +100,7 @@
     "@microsoft/fetch-event-source": "^2.0.1",
     "@radix-ui/react-dialog": "^1.0.5",
     "aws-amplify": "^5.3.12",
+    "dotenv": "^16.3.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
@@ -195,6 +197,9 @@
     ],
     "afterSign": ".erb/scripts/notarize.js",
     "mac": {
+      "notarize": {
+        "teamId": "FSZQ97X3V6"
+      },
       "target": {
         "target": "default",
         "arch": [
@@ -243,8 +248,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "indigoai-us",
+      "repo": "indigo-electron2"
     },
     "nsis": {
       "oneClick": false,
