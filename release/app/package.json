@@ -1,12 +1,12 @@
 {
   "name": "indigo-electron2",
-  "version": "1.1.0",
-  "description": "A foundation for scalable desktop apps",
+  "version": "1.2.2",
+  "description": "Desktop launcher for IndigoAI",
   "license": "MIT",
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://github.com/electron-react-boilerplate"
+    "name": "IndigoAI",
+    "email": "therealstefan@gmail.com",
+    "url": "https://getindigo.ai"
   },
   "main": "./dist/main/main.js",
   "scripts": {
