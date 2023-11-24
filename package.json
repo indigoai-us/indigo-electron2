@@ -99,6 +99,7 @@
     "@microsoft/fetch-event-source": "^2.0.1",
     "@radix-ui/react-dialog": "^1.0.5",
     "aws-amplify": "^5.3.12",
+    "dotenv": "^16.3.1",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
@@ -243,8 +244,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "johnsonfamily1234",
+      "repo": "indigo-electron2"
     },
     "nsis": {
       "oneClick": false,
