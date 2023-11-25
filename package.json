@@ -249,8 +249,7 @@
     "publish": {
       "provider": "github",
       "owner": "indigoai-us",
-      "repo": "indigo-electron2",
-      "private": true
+      "repo": "indigo-electron2"
     },
     "nsis": {
       "oneClick": false,
