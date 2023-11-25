@@ -54,3 +54,6 @@ electron-builder.env
 aws-exports_backup.js
 developer-id-application.p12
 electron-builder.env
+electron-builder.backup.env
+
+.git-backup
