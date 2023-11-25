@@ -230,7 +230,8 @@
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "verifyUpdateCodeSignature": false
     },
     "linux": {
       "target": [
