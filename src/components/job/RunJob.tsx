@@ -245,7 +245,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
         </div>
         <div onClick={() => setChatLayout(!chatLayout)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'><IconBack/></span>
-            <span className='text-gray-400 text-xs'>Layout</span>
+            <span className='text-gray-400 text-xs'>Layout test</span>
         </div>
         {job?.img &&
           <a href={job.img} target="_blank" className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
