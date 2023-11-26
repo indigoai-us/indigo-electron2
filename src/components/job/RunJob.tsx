@@ -12,6 +12,8 @@ import { Modal } from '../shadcn/modal';
 import IconImage from '../../renderer/icons/IconImage';
 import JobChatLayout from './JobChatLayout';
 import JobPlaygroundLayout from './JobPlaygroundLayout';
+import IconChatBubble from '../../renderer/icons/IconChatBubble';
+import IconFormBubble from '../../renderer/icons/IconFormBubble';
 
 export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   const [stream, setStream] = useState(true);
@@ -26,7 +28,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   const messageListRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLInputElement>(null);
   const [isOpenEnded, setIsOpenEnded] = useState(false);
-  const [chatLayout, setChatLayout] = useState(true);
+  const [chatLayout, setChatLayout] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,13 +66,13 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
 
     try {
 
-      console.log('command: ', command);
+      // console.log('command: ', command);
 
       const newJob = id ? await getExistingJob(id) : await createJob({command, img});
 
       setJob(newJob);
 
-      console.log('newJob', newJob);
+      // console.log('newJob', newJob);
 
       if(!newJob.command._id) {
         setIsOpenEnded(true);
@@ -79,15 +81,12 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
       let prompt = newJob.promptFrame ? newJob.promptFrame : newJob.prompt_frame;
 
       newJob.data.forEach((d: any) => {
-        const objectKey = Object.keys(input)[0];
-        prompt = prompt.replace(`{${objectKey}}`, d[objectKey]);
+        prompt = prompt.replace(`{${d.name}}`, d.selectedOption.value);
       });
 
-      prompt = prompt.replace(`[copied]`, newJob.copied);
+      prompt = prompt.replace(`{copied}`, newJob.copied);      
 
       setOriginalPrompt(prompt);
-
-      console.log('openEnded: ', openEnded);
 
       if(newJob.messages) {
         const formattedMessages = newJob.messages.map((message: any, index: number) => {
@@ -109,15 +108,22 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
         })
         setMessages(formattedMessages);
       } else if (!openEnded) {
+
+        const newUserMessage = {
+          index: 0,
+          input: prompt,
+          messageType: 'user'
+        }
+
         const newApiMessage = {
-          index: messages.length,
+          index: 1,
           input,
           messageType: 'initial',
           id,
           job: newJob
         }
 
-        setMessages([...messages, newApiMessage]);
+        setMessages([...messages, newUserMessage, newApiMessage]);
       }
 
     } catch (e: any) {
@@ -190,15 +196,15 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   }
 
   const finishMessage = ({index, output}: any) => {
-    console.log('finishMessage index', index);
-    console.log('finishMessage output', output);
-
+    
     const newMessages = messages.map((message: any) => {
       if(message.index === index) {
-        message.output = output;
+        message.input = output;
+        message.messageType = 'existing_api'
       }
       return message;
     })
+    
     setMessages(newMessages);
   }
 
@@ -243,9 +249,9 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
             <span className='mr-2 w-auto'><IconBack/></span>
             <span className='text-gray-400 text-xs'>Back</span>
         </div>
-        <div onClick={() => setChatLayout(!chatLayout)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
-            <span className='mr-2 w-auto'><IconBack/></span>
-            <span className='text-gray-400 text-xs'>Layout test</span>
+        <div onClick={() => setChatLayout(!chatLayout)} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+            <span className='mr-2 w-auto'>{chatLayout ? <IconFormBubble/> : <IconChatBubble/>}</span>
+            <span className='text-gray-400 text-xs'>{chatLayout ? 'Playground Mode' : ' Classic Chat'}</span>
         </div>
         {job?.img &&
           <a href={job.img} target="_blank" className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
