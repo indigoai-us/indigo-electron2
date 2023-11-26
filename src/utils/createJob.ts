@@ -3,10 +3,10 @@ import getClip from "./getClip";
 import { v4 as uuidv4 } from "uuid";
 
 const createJob = async ({command, img}: any) => {
-  console.log('createJob', command);
+  // console.log('createJob', command);
 
   const copied = await getClip();
-  console.log('copied', copied);
+  // console.log('copied', copied);
 
   const body = {
     command: command._id,
@@ -23,7 +23,7 @@ const createJob = async ({command, img}: any) => {
     img,
   };
 
-  console.log('body', body);
+  // console.log('body', body);
 
   const user = await Auth.currentAuthenticatedUser();
   const createdJob = await API.post('be1', '/jobs', {
@@ -33,7 +33,7 @@ const createJob = async ({command, img}: any) => {
     body
   }).catch((error: any) => console.log(error.response));
 
-  console.log('createdJob', createdJob);
+  // console.log('createdJob', createdJob);
 
   return createdJob;
 

@@ -47,7 +47,7 @@ export default function JobChatLayout({
               placeholder="Ask..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className="textarea w-full py-3 px-4 bg-gray-900 bg-opacity-40  rounded-lg"
+              className="textarea w-full py-3 px-4 bg-gray-900 bg-opacity-40 rounded-lg border-2 border-indigo-600 text-slate-200"
             />
             <button
               type = "submit"

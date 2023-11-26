@@ -57,7 +57,7 @@ const JobsHistory = () => {
       return {...job, formattedDate};
     })
 
-    console.log('newJobs', newJobs);
+    // console.log('newJobs', newJobs);
 
     setLocalJobs(newJobs);
 
