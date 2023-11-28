@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Auth, API } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/IndigoLogoHorizontal2.png';
+import GoogleSignInButton from '../../assets/images/google-signin-button.png';
 import './App.css'
 import { useAppStore } from '../../lib/store';
+import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -116,6 +118,15 @@ const Login = () => {
           <i>Incorrect login/password</i>
         </div>
       }
+      <button
+        onClick={() => Auth.federatedSignIn({provider: CognitoHostedUIIdentityProvider.Google})}
+        className="w-1/4 mt-4"
+      >
+        <img 
+          src={GoogleSignInButton} 
+          alt="Google Sign In" 
+        />
+      </button>
     </div>
   );
 };

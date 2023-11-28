@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, desktopCapturer } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, session } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -234,7 +234,7 @@ const registerGlobalShortcut = () => {
     if (mainWindow === null) await createWindow()
     console.log('creating window and opening commands...')
     mainWindow?.once('ready-to-show', async () => {
-      await mainWindow?.webContents.send('open-commands')
+      await mainWindow?.webContents.send('open-route', {route: ''})
       mainWindow?.show();
     })
   }
@@ -246,7 +246,7 @@ const registerGlobalShortcut = () => {
     }
     if (mainWindow !== null) {
       console.log('opening commands...');
-      mainWindow && mainWindow.webContents.send('open-commands')
+      mainWindow && mainWindow.webContents.send('open-route', {route: ''})
       mainWindow.show();
 
     }
@@ -260,7 +260,7 @@ const registerGlobalShortcut = () => {
     if (mainWindow === null) await createWindow()
     console.log('creating window and opening chat...')
     mainWindow?.once('ready-to-show', () => {
-      mainWindow?.webContents.send('open-chat')
+      mainWindow?.webContents.send('open-route', {route: 'open-chat'})
     })
   }
 
@@ -269,7 +269,7 @@ const registerGlobalShortcut = () => {
       createWindowAndOpenChat();
     }
     if (mainWindow !== null) {
-      mainWindow && mainWindow.webContents.send('open-chat')
+      mainWindow && mainWindow.webContents.send('open-route', {route: 'open-chat'})
       mainWindow.show();
     }
   })
@@ -282,7 +282,7 @@ const registerGlobalShortcut = () => {
     await createWindow();
     console.log('creating window and opening overlay...')
     mainWindow?.once('ready-to-show', () => {
-      mainWindow?.webContents.send('open-overlay')
+      mainWindow?.webContents.send('open-route', {route: 'overlay'})
     })
   }
 
@@ -292,10 +292,10 @@ const registerGlobalShortcut = () => {
     }
     if (mainWindow !== null) {
       mainWindow.show();
-      mainWindow.webContents.send('open-overlay')
+      mainWindow.webContents.send('open-route', {route: 'overlay'})
     }
     if (mainWindow) {
-      mainWindow.webContents.send('open-overlay')
+      mainWindow.webContents.send('open-route', {route: 'overlay'})
     }
   })
 
@@ -313,7 +313,67 @@ app.setLoginItemSettings({
   // openAsHidden: true,
 })
 
-app
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('indigo-app', process.execPath, [
+      '-r',
+      path.join(
+        __dirname,
+        '..',
+        '..',
+        'node_modules',
+        'ts-node/register/transpile-only'
+      ),
+      path.join(__dirname, '..', '..'),
+    ]);
+  }
+} else {
+  app.setAsDefaultProtocolClient('indigo-app')
+}
+
+const handleDeepLink = (url: string | undefined) => {
+  console.log('deep link url: ', url);
+  // mainWindow?.webContents.send('open-route', {route: url})
+}
+
+if(process.platform === 'win32') {
+
+  const gotTheLock = app.requestSingleInstanceLock()
+
+  if (!gotTheLock) {
+    app.quit()
+  } else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore()
+        mainWindow.focus()
+      }
+      // the commandLine is array of strings in which last element is deep link url
+      handleDeepLink(commandLine.pop())
+    })
+
+    // Create mainWindow, load the rest of the app, etc...
+    app
+    .whenReady()
+    .then(() => {
+      if (app.dock) { // Check if dock is available (macOS)
+        app.dock.hide();
+      }
+      createWindow();
+      registerGlobalShortcut();
+      app.on('activate', () => {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (mainWindow === null) createWindow();
+      });
+    })
+    .catch(console.log);
+  }
+}
+
+if(process.platform === 'darwin') {
+  app
   .whenReady()
   .then(() => {
     if (app.dock) { // Check if dock is available (macOS)
@@ -328,3 +388,9 @@ app
     });
   })
   .catch(console.log);
+
+  // Handle the protocol. In this case, we choose to show an Error Box.
+  app.on('open-url', (event, url) => {
+    handleDeepLink(url)
+  })
+}
