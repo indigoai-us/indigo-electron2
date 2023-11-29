@@ -109,19 +109,9 @@ export default function JobPlaygroundLayout({
               formRef = {formRef}
             />
           }
-          {[...messages].reverse().map((message: any, index: number) => {
+          {messages.map((message: any, index: number) => {
             return (
               <>
-                {message.messageType === 'existing_api' && index === 0 &&
-                  <TextAreaInput
-                    onSubmit = {onSubmit}
-                    textAreaRef = {textAreaRef}
-                    loading = {loading}
-                    input = {input}
-                    setInput = {setInput}
-                    formRef = {formRef}
-                  />
-                }
                 <Message
                   key={message.index}
                   input={message.input}
@@ -132,6 +122,16 @@ export default function JobPlaygroundLayout({
                   setTopLevelLoading={setLoading}
                   finishMessage={finishMessage}
                 />
+                {message.messageType === 'existing_api' && index === messages.length-1 &&
+                  <TextAreaInput
+                    onSubmit = {onSubmit}
+                    textAreaRef = {textAreaRef}
+                    loading = {loading}
+                    input = {input}
+                    setInput = {setInput}
+                    formRef = {formRef}
+                  />
+                }
               </>            
             )
           })}
