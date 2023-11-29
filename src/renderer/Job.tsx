@@ -24,6 +24,7 @@ const Job = () => {
   const [localModels, setLocalModels] = useState(models);
   const [openEnded, setOpenEnded] = useState(false);
   const [command, setCommand] = useState<any | null>(null);
+  const [img, setImg] = useState<any | null>(null);
 
   useEffect(() => {
     if(models.length === 0) {
@@ -45,6 +46,9 @@ const Job = () => {
     }
     if(location?.state?.id) {      
       setId(location.state.id);
+    }
+    if(location?.state?.img) {
+      setImg(location.state.img);
     }
 
   }, []);
@@ -72,6 +76,7 @@ const Job = () => {
         <RunJob
           command={command}
           id={id}
+          img={img}
         />
       }
 

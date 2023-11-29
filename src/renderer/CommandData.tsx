@@ -10,11 +10,13 @@ const CommandData = () => {
   const [data, setData] = useState([]);
   const [copied, setCopied] = useState('');
   const [command, setCommand] = useState<any>(null);
+  const [img, setImg] = useState<any>(null);
 
   useEffect(() => {
     console.log('command: ', location.state);
     setData(location.state.data);
     setCopied(location.state.copied);
+    setImg(location?.state?.img)
     setCommand(location.state);
     window.electron.ipcRenderer.send(
       'window-resize',
@@ -62,7 +64,7 @@ const CommandData = () => {
 
   const submitJob = async () => {
     const command = location.state;
-    navigate('/job', {state: {command}})
+    navigate('/job', {state: {command, img}})
   }
 
   useEffect(() => {

@@ -88,7 +88,8 @@ const ScreenOverlay = () => {
 
         console.log('storedFile: ', storedFileUrl);
         
-        navigate('/vision-job',{state: {img: storedFileUrl}})
+        // navigate('/vision-job',{state: {img: storedFileUrl}})
+        navigate('/',{state: {img: storedFileUrl}})
 
       } catch (error) {
         console.log("Error uploading file: ", error);

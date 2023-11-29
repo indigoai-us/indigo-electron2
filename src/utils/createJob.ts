@@ -16,14 +16,14 @@ const createJob = async ({command, img}: any) => {
     id: uuidv4(),
     free: command.free,
     systemMessage: command.systemMessage,
-    model: command.model,
+    model: command.model._id ? command.model._id : command.model,
     temperature: command.temperature,
     tokens: command.tokens,
     copied,
     img,
   };
 
-  // console.log('body', body);
+  console.log('body', body);
 
   const user = await Auth.currentAuthenticatedUser();
   const createdJob = await API.post('be1', '/jobs', {

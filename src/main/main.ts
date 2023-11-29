@@ -246,7 +246,7 @@ const registerGlobalShortcut = () => {
     }
     if (mainWindow !== null) {
       console.log('opening commands...');
-      mainWindow && mainWindow.webContents.send('open-route', {route: 'commands'})
+      mainWindow && mainWindow.webContents.send('open-route', {route: ''})
       mainWindow.show();
 
     }
