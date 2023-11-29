@@ -20,37 +20,15 @@ export default function PrivateRoute({ children, ...rest }: any) {
   console.log('isAuthenticated: ', isAuthenticated);
 
   useEffect(() => {
-    const openSpecificComponent = () => {
-      console.log('opening chat...');
-      navigate('/open-chat');
+    const openRoute = (payload: any) => {
+      console.log('opening route: ', payload.route);
+      navigate(`/${payload.route}`);
     };
   
-    window.electron.ipcRenderer.on('open-chat', openSpecificComponent);
-
-    const openOverlayFunction = () => {
-      console.log('opening overlay...');
-      navigate('/overlay');
-    };
-
-    window.electron.ipcRenderer.on('open-overlay', openOverlayFunction);
-
-    return () => {
-      window.electron.ipcRenderer.removeListener('open-chat', openSpecificComponent);
-      window.electron.ipcRenderer.removeListener('open-overlay', openOverlayFunction);
-    };
-    
-  }, [navigate]);
-
-  useEffect(() => {
-    const openCommands = () => {
-      console.log('opening commands...');
-      navigate('/');
-    };
-  
-    window.electron.ipcRenderer.on('open-commands', openCommands);
+    window.electron.ipcRenderer.on('open-route', openRoute);
   
     return () => {
-      window.electron.ipcRenderer.removeListener('open-commands', openCommands);
+      window.electron.ipcRenderer.removeListener('open-route', openRoute);
     };
   }, [navigate]);
 

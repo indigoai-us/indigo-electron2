@@ -3,7 +3,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 export type Channel = 'ipc-example';
-export type Chat = 'open-chat' | 'open-overlay';
+export type Chat = 'open-route';
 export type ResizeChannel = 'window-resize' | 'take-screenshot';
 
 const electronHandler = {

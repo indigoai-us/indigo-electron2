@@ -165,7 +165,7 @@ const Commands = () => {
   }
 
   return (
-    <div className='main flex flex-col items-center h-screen justify-between p-2'>
+    <div className={`${window.electron.environment !== 'darwin' && 'main'} flex flex-col items-center h-screen justify-between p-2`}>
       {/* Input Field */}
       <div className='flex-none w-full'>
         <input

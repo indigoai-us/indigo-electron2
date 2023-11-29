@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Auth, API } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/images/IndigoLogoHorizontal2.png';
+import logo from '../../assets/icons/512x512.png';
 import './App.css'
 import { useAppStore } from '../../lib/store';
 
@@ -49,8 +49,11 @@ const Login = () => {
   };
 
   return (
-    <div className='main flex flex-col items-center justify-center h-screen'>
-      <img width="200" alt="IndigoAI" src={logo} />
+    <div className={`${window.electron.environment !== 'darwin' && 'main'} flex flex-col items-center justify-center h-screen`}>
+      <div className='flex flex-row justify-center items-center'>
+        <img width="40" alt="IndigoAI" src={logo} />
+        <div className='text-5xl ml-2 relative bottom-1'>Indigo</div>
+      </div>
       <form className="mt-6" onSubmit={handleLogin}>
         <div className="mb-4">
           <label
