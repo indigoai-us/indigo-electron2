@@ -105,7 +105,7 @@ return path.join(RESOURCES_PATH, ...paths);
 let tray: Tray | null = null;
 
 const createTray = () => {
-  const icon = getAssetPath('IndigoLogoSmall1.png')
+  const icon = getAssetPath('icon.png')
   const trayicon = nativeImage.createFromPath(icon)
   tray = new Tray(trayicon.resize({width: 16}))
   const contextMenu = Menu.buildFromTemplate([
@@ -234,7 +234,7 @@ const registerGlobalShortcut = () => {
     if (mainWindow === null) await createWindow()
     console.log('creating window and opening commands...')
     mainWindow?.once('ready-to-show', async () => {
-      await mainWindow?.webContents.send('open-commands')
+      await mainWindow?.webContents.send('open-route', {route: ''})
       mainWindow?.show();
     })
   }
@@ -246,7 +246,7 @@ const registerGlobalShortcut = () => {
     }
     if (mainWindow !== null) {
       console.log('opening commands...');
-      mainWindow && mainWindow.webContents.send('open-commands')
+      mainWindow && mainWindow.webContents.send('open-route', {route: 'commands'})
       mainWindow.show();
 
     }
@@ -260,7 +260,7 @@ const registerGlobalShortcut = () => {
     if (mainWindow === null) await createWindow()
     console.log('creating window and opening chat...')
     mainWindow?.once('ready-to-show', () => {
-      mainWindow?.webContents.send('open-chat')
+      mainWindow?.webContents.send('open-route', {route: 'open-chat'})
     })
   }
 
@@ -269,7 +269,7 @@ const registerGlobalShortcut = () => {
       createWindowAndOpenChat();
     }
     if (mainWindow !== null) {
-      mainWindow && mainWindow.webContents.send('open-chat')
+      mainWindow && mainWindow.webContents.send('open-route', {route: 'open-chat'})
       mainWindow.show();
     }
   })
@@ -282,7 +282,7 @@ const registerGlobalShortcut = () => {
     await createWindow();
     console.log('creating window and opening overlay...')
     mainWindow?.once('ready-to-show', () => {
-      mainWindow?.webContents.send('open-overlay')
+      mainWindow?.webContents.send('open-route', {route: 'overlay'})
     })
   }
 
@@ -292,10 +292,10 @@ const registerGlobalShortcut = () => {
     }
     if (mainWindow !== null) {
       mainWindow.show();
-      mainWindow.webContents.send('open-overlay')
+      mainWindow.webContents.send('open-route', {route: 'overlay'})
     }
     if (mainWindow) {
-      mainWindow.webContents.send('open-overlay')
+      mainWindow.webContents.send('open-route', {route: 'overlay'})
     }
   })
 
