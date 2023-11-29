@@ -66,13 +66,16 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
 
     try {
 
-      // console.log('command: ', command);
+      console.log('command: ', command);
+      console.log('img: ', img);
+      
+      console.log('id: ', id);
 
       const newJob = id ? await getExistingJob(id) : await createJob({command, img});
 
       setJob(newJob);
 
-      // console.log('newJob', newJob);
+      console.log('newJob', newJob);
 
       if(!newJob.command._id) {
         setIsOpenEnded(true);
@@ -81,7 +84,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
       let prompt = newJob.promptFrame ? newJob.promptFrame : newJob.prompt_frame;
 
       newJob.data.forEach((d: any) => {
-        prompt = prompt.replace(`{${d.name}}`, d.selectedOption.value);
+        prompt = prompt.replace(`{${d.name}}`, d.selectedOption?.value);
       });
 
       prompt = prompt.replace(`{copied}`, newJob.copied);      

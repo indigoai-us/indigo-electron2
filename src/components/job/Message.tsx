@@ -3,7 +3,7 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './styles.css'
 import { toast } from 'react-toastify';
-import indigosmall from '../../../assets/images/indigosmall.png';
+import indigosmall from '../../../assets/icon.png';
 import usericon from '../../../assets/images/usericon.png';
 
 type MessageProps = {

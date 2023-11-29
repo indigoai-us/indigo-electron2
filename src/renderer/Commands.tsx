@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Auth, API } from 'aws-amplify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/IndigoLogoHorizontal2.png';
 import './App.css'
 import createJob from '../utils/createJob';
@@ -12,8 +12,8 @@ import { useAppStore } from '../../lib/store';
 import IconHistory from './icons/IconHistory';
 
 const Commands = () => {
+  const location = useLocation();
   const [baseCommands, setBaseCommands] = useState([]);
-  // const [commands, setCommands] = useState([]);
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -23,7 +23,7 @@ const Commands = () => {
   const { commands, fetchCommands, jobs, fetchJobs } = useAppStore()
   const [localCommands, setLocalCommands] = useState(commands);
   const scrollDivRef = useRef<HTMLDivElement | null>(null);
-
+  const [img, setImg] = useState<any>(location?.state?.img);
 
   useEffect(() => {
     const scrollDiv = scrollDivRef.current;
@@ -46,12 +46,26 @@ const Commands = () => {
     }
   }, []);
 
+  const handleLocalCommands = async(commands: any) => {
+    if(location?.state?.img) {
+      console.log('commands: ', commands);
+      
+      const visionCommands = commands.filter((command: any) => command.model.nameCode==='gpt-4-vision-preview');
+      console.log('visionCommands: ', visionCommands);
+      setLocalCommands(visionCommands);
+    } else {
+      setLocalCommands(commands);
+    }
+  }
+
   useEffect(() => {
     if(commands.length === 0) {
       fetchCommands()
     }
-    setLocalCommands(commands)
-  }, [commands])
+    console.log('location?.state?.img: ', location?.state?.img);
+    
+    handleLocalCommands(commands);
+  }, [commands, location])
 
   useEffect(() => {
     if(jobs.length === 0) {
@@ -132,12 +146,12 @@ const Commands = () => {
 
   useEffect(() => {
     if(search === '') {
-      setLocalCommands(commands);
+      handleLocalCommands(commands);
     } else {
       const filteredCommands = search ? commands.filter((command: any) => {
         return command.name.toLowerCase().includes(search.toLowerCase());
       }) : baseCommands;
-      setLocalCommands(filteredCommands);
+      handleLocalCommands(filteredCommands);
     }
   }, [search]);
 
@@ -147,7 +161,7 @@ const Commands = () => {
     const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
 
     if(newCommand.data.length > 0) {
-      navigate('/data',{state: {...newCommand, copied: clipContents}})
+      navigate('/data',{state: {...newCommand, copied: clipContents, img: location?.state?.img}})
     } else {
       navigate('/job',{state: {command: newCommand}})
     }
