@@ -47,11 +47,9 @@ const Commands = () => {
   }, []);
 
   const handleLocalCommands = async(commands: any) => {
-    if(location?.state?.img) {
-      console.log('commands: ', commands);
-      
+    if(location?.state?.img) {      
       const visionCommands = commands.filter((command: any) => command.model.nameCode==='gpt-4-vision-preview');
-      console.log('visionCommands: ', visionCommands);
+      visionCommands.length === 1 && runCommand(visionCommands[0]);
       setLocalCommands(visionCommands);
     } else {
       setLocalCommands(commands);

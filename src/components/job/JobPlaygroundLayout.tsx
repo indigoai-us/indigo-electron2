@@ -93,7 +93,6 @@ export default function JobPlaygroundLayout({
   return (
     <>
       <div className="cloud flex-grow overflow-y-auto">
-        <h1>PLAYGROUND LAYOUT</h1>
         <div
           ref={messageListRef}
           className="messagelist"
