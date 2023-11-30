@@ -14,6 +14,7 @@ import JobChatLayout from './JobChatLayout';
 import JobPlaygroundLayout from './JobPlaygroundLayout';
 import IconChatBubble from '../../renderer/icons/IconChatBubble';
 import IconFormBubble from '../../renderer/icons/IconFormBubble';
+import IconList from '../../renderer/icons/IconList';
 
 export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   const [stream, setStream] = useState(true);
@@ -68,7 +69,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
 
       console.log('command: ', command);
       console.log('img: ', img);
-      
+
       console.log('id: ', id);
 
       const newJob = id ? await getExistingJob(id) : await createJob({command, img});
@@ -87,7 +88,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
         prompt = prompt.replace(`{${d.name}}`, d.selectedOption?.value);
       });
 
-      prompt = prompt.replace(`{copied}`, newJob.copied);      
+      prompt = prompt.replace(`{copied}`, newJob.copied);
 
       setOriginalPrompt(prompt);
 
@@ -199,7 +200,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   }
 
   const finishMessage = ({index, output}: any) => {
-    
+
     const newMessages = messages.map((message: any) => {
       if(message.index === index) {
         message.input = output;
@@ -207,7 +208,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
       }
       return message;
     })
-    
+
     setMessages(newMessages);
   }
 
@@ -251,6 +252,10 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
         <div onClick={() => navigate(-1)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'><IconBack/></span>
             <span className='text-gray-400 text-xs'>Back</span>
+        </div>
+        <div onClick={() => navigate('/history')} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+            <span className='mr-2 w-auto'><IconList /></span>
+            <span className='text-gray-400 text-xs'>Command List</span>
         </div>
         <div onClick={() => setChatLayout(!chatLayout)} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'>{chatLayout ? <IconFormBubble/> : <IconChatBubble/>}</span>
