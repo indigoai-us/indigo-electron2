@@ -6,7 +6,7 @@
 body {
   position: relative;
   scroll-behavior: smooth;
-  border: 1px solid rgba(0, 0, 3, 0.1);
+  /* border: 1px solid rgba(0, 0, 3, 0.1); */
   border-radius: 10px;
   box-sizing: border-box;
   /* background: rgba(10, 10, 14, 0.95); */

@@ -30,7 +30,7 @@ const Message = (props: MessageProps) => {
     outputRef.current = output;
   }, [output]);
 
-  useEffect(() => {    
+  useEffect(() => {
     if(messageType === 'user' || messageType === 'existing_api') {
       setOutput(input);
     } else {
@@ -66,7 +66,7 @@ const Message = (props: MessageProps) => {
         // console.log('message body: ', body);
 
         const endpoint = job.img ? 'vision_chat' : 'webview_chat';
-        
+
         await fetchEventSource(`${url}/${endpoint}`, {
           method: 'POST',
           body,
@@ -89,7 +89,7 @@ const Message = (props: MessageProps) => {
               const newOutput = o === '' ? 'I\'m sorry, it appears that something has gone wrong. This is generally due to token limitations. Please resubmit your Command request.' : o;
               outputRef.current = newOutput;
               return newOutput;
-            });          
+            });
           },
           onerror(ev) {
             console.log('onerror error', ev);
@@ -126,7 +126,7 @@ const Message = (props: MessageProps) => {
   return (
     <div
       key={index}
-      className={messageType === "user" && loading ? 'usermessagewaiting' : (messageType === "initial" || messageType === "api" || messageType === 'existing_api') ? "apimessage pt-4 pb-10 px-6 text-white text-sm" : "usermessage py-4 px-6 bg-gray-950 bg-opacity-60 text-gray-500 italic text-sm"}
+      className={messageType === "user" && loading ? 'usermessagewaiting' : (messageType === "initial" || messageType === "api" || messageType === 'existing_api') ? "apimessage pt-4 pb-10 px-6 text-white" : "usermessage py-4 px-6 bg-gray-950 bg-opacity-60 text-slate-500"}
     >
       {messageType === 'user' ? <img src = {usericon} alt = "User" width = "30" height = "30" className = "usericon" />
       : <img src = {indigosmall} alt = "AI" width = "30" height = "30" className = "boticon" />}
@@ -155,7 +155,7 @@ const Message = (props: MessageProps) => {
           {inflight &&
             <div onClick={stopStream} style={{marginLeft: 5, color: 'grey'}} title="Stop">
               <svg className="svgiconbutton" fill="#fff" height="19px" width="19px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 297 297"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M148.5,0C66.486,0,0,66.486,0,148.5S66.486,297,148.5,297S297,230.514,297,148.5S230.514,0,148.5,0z M213.292,190.121 c0,12.912-10.467,23.379-23.378,23.379H106.67c-12.911,0-23.378-10.467-23.378-23.379v-83.242c0-12.912,10.467-23.379,23.378-23.379 h83.244c12.911,0,23.378,10.467,23.378,23.379V190.121z"></path> </g></svg>
-            </div>        
+            </div>
           }
         </div>
       }
