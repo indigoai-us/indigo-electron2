@@ -213,7 +213,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   }
 
   return (
-    <main className="main flex flex-col h-screen overflow-x-hidden">
+    <main className={`${window.electron.environment !== 'darwin' && 'main'} flex flex-col h-screen overflow-x-hidden`}>
       {chatLayout ?
           <JobChatLayout
             messageListRef = {messageListRef}
