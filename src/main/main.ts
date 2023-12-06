@@ -169,13 +169,9 @@ const createWindow = async () => {
   });
    // Add the event listener here
    mainWindow.webContents.on('before-input-event', (event, input) => {
-    console.log('capturing input event: ', input.key);
-
     if (input.key.toLowerCase() === 'escape') {
       // mainWindow && mainWindow.close();
-      console.log('mainWindow.isVisible(): ', mainWindow && mainWindow.isVisible());
-
-      mainWindow && mainWindow.isVisible() && mainWindow.hide();
+      // mainWindow && mainWindow.hide();
     }
   });
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -246,16 +242,18 @@ const registerGlobalShortcut = () => {
     })
   }
 
+  const openRoute = async (route: string) => {
+    mainWindow && await mainWindow.webContents.send('open-route', {route})
+    mainWindow && mainWindow.show();
+  }
+
   const ret = globalShortcut.register('Alt+I', () => {
     if (mainWindow === null) {
       log.info('creating window and opening commands...')
       createWindowAndOpenCommands();
     }
     if (mainWindow !== null) {
-      console.log('opening commands...');
-      mainWindow && mainWindow.webContents.send('open-route', {route: ''})
-      mainWindow.show();
-
+      openRoute('');
     }
   })
 
@@ -276,8 +274,7 @@ const registerGlobalShortcut = () => {
       createWindowAndOpenChat();
     }
     if (mainWindow !== null) {
-      mainWindow && mainWindow.webContents.send('open-route', {route: 'open-chat'})
-      mainWindow.show();
+      openRoute('open-chat');
     }
   })
 
@@ -298,11 +295,7 @@ const registerGlobalShortcut = () => {
       createWindowAndOpenOverlay()
     }
     if (mainWindow !== null) {
-      mainWindow.show();
-      mainWindow.webContents.send('open-route', {route: 'overlay'})
-    }
-    if (mainWindow) {
-      mainWindow.webContents.send('open-route', {route: 'overlay'})
+      openRoute('overlay');
     }
   })
 

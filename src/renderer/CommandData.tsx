@@ -85,7 +85,7 @@ const CommandData = () => {
     };
   }, [navigate]); // Add navigate to the dependency array
   return (
-    <div className={`${window.electron.environment !== 'darwin' && 'main'} flex flex-grow flex-col overflow-auto h-screen px-6 py-6`}>
+    <div className={`main flex flex-grow flex-col overflow-auto h-screen px-6 py-6`}>
 
       {/* Command Name */}
       <div>
