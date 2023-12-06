@@ -47,7 +47,7 @@ const Commands = () => {
   }, []);
 
   const handleLocalCommands = async(commands: any) => {
-    if(location?.state?.img) {      
+    if(location?.state?.img) {
       const visionCommands = commands.filter((command: any) => command.model.nameCode==='gpt-4-vision-preview');
       visionCommands.length === 1 && runCommand(visionCommands[0]);
       setLocalCommands(visionCommands);
@@ -61,7 +61,7 @@ const Commands = () => {
       fetchCommands()
     }
     console.log('location?.state?.img: ', location?.state?.img);
-    
+
     handleLocalCommands(commands);
   }, [commands, location])
 
@@ -177,7 +177,7 @@ const Commands = () => {
   }
 
   return (
-    <div className={`${window.electron.environment !== 'darwin' && 'main'} flex flex-col items-center h-screen justify-between p-2`}>
+    <div className={`main flex flex-col items-center h-screen justify-between p-2`}>
       {/* Input Field */}
       <div className='flex-none w-full'>
         <input

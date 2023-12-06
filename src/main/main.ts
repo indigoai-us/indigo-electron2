@@ -46,7 +46,6 @@ ipcMain.on('take-screenshot', (event, dimens) => {
     event.reply('screenshot-captured', {img, dimens, screenWidth, screenHeight});
   }).catch((err: any) => console.log('err: ', err));
 
-
 })
 
 ipcMain.on('window-resize', (e, width, height, full, toEdges) => {
@@ -154,7 +153,7 @@ const createWindow = async () => {
     width: 600,
     height: 400,
     transparent: true,
-    vibrancy: 'under-window',
+    // vibrancy: 'under-window',
     visualEffectState: 'active',
     darkTheme: true,
     icon: getAssetPath('icon.ico'),// Set the icon here
@@ -170,9 +169,13 @@ const createWindow = async () => {
   });
    // Add the event listener here
    mainWindow.webContents.on('before-input-event', (event, input) => {
+    console.log('capturing input event: ', input.key);
+
     if (input.key.toLowerCase() === 'escape') {
       // mainWindow && mainWindow.close();
-      mainWindow && mainWindow.hide();
+      console.log('mainWindow.isVisible(): ', mainWindow && mainWindow.isVisible());
+
+      mainWindow && mainWindow.isVisible() && mainWindow.hide();
     }
   });
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -189,6 +192,8 @@ const createWindow = async () => {
   });
 
   mainWindow.on('closed', () => {
+    console.log('closed event...');
+
     mainWindow = null;
   });
 
@@ -219,6 +224,8 @@ const createWindow = async () => {
 app.commandLine.appendSwitch('wm-window-animations-disabled');
 
 app.on('window-all-closed', () => {
+  console.log('window-all-closed...');
+
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
