@@ -43,7 +43,7 @@ import Message from './Message';
           >
             Submit
           </button>
-          <div className="ml-2 text-indigo-500">Alt+Enter</div>
+          <div className="ml-2 text-indigo-500">Ctrl+Enter</div>
         </div>
       </form>
     )
@@ -69,9 +69,9 @@ export default function JobPlaygroundLayout({
   // }, [messages]);
 
   const handleKeyPress = async (event: any) => {
-    if(event.altKey && event.key === 'Enter') {
-      console.log('alt+enter pressed: ', formRef.current);
-
+    if(event.ctrlKey && event.key === 'Enter') {
+      console.log('ctrl+enter pressed: ', formRef.current);
+      
       if (formRef.current) {
         console.log('formRef.current exists and is being run... ');
         const formEvent = new Event('submit', { cancelable: true });

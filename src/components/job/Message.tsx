@@ -74,7 +74,7 @@ const Message = (props: MessageProps) => {
           openWhenHidden: true,
           signal: controller.signal,
           onmessage(ev) {
-            // console.log('ev.data', ev.data);
+            console.log('ev.data', ev.data);
             const nextToken = !ev.data ? '\n' : ev.data;
             setOutput((o) => {
               const newOutput = o + nextToken;
@@ -85,11 +85,11 @@ const Message = (props: MessageProps) => {
           onclose() {
             console.log('onclose');
             finishMessage({index, output: outputRef.current});
-            setOutput((o) => {
-              const newOutput = o === '' ? 'I\'m sorry, it appears that something has gone wrong. This is generally due to token limitations. Please resubmit your Command request.' : o;
-              outputRef.current = newOutput;
-              return newOutput;
-            });
+            // setOutput((o) => {
+            //   const newOutput = o === '' ? 'I\'m sorry, it appears that something has gone wrong. This is generally due to token limitations. Please resubmit your Command request.' : o;
+            //   outputRef.current = newOutput;
+            //   return newOutput;
+            // });          
           },
           onerror(ev) {
             console.log('onerror error', ev);

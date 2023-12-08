@@ -14,6 +14,7 @@ import JobChatLayout from './JobChatLayout';
 import JobPlaygroundLayout from './JobPlaygroundLayout';
 import IconChatBubble from '../../renderer/icons/IconChatBubble';
 import IconFormBubble from '../../renderer/icons/IconFormBubble';
+import handleGoBack from '../../utils/handleGoBack';
 import IconList from '../../renderer/icons/IconList';
 
 export default function RunJob({id, openEnded, resetChat, command, img}: any) {
@@ -249,7 +250,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
       <ToastContainer />
 
       <div className="flex flex-row">
-        <div onClick={() => navigate(-1)} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
+        <div onClick={() => handleGoBack({navigate})} className='flex flex-row flex-grow text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'><IconBack/></span>
             <span className='text-gray-400 text-xs'>Back</span>
         </div>
