@@ -107,7 +107,8 @@ const Commands = () => {
       const command = commands[parseInt(event.key)];
       command && runCommand(command);
     }
-    if(event.ctrlKey && event.key === 'r') {
+    // Use Command key for Mac and Ctrl key for others
+    if((window.navigator.userAgent.includes('Mac') && event.metaKey && event.key === 'r') || (!window.navigator.userAgent.includes('Mac') && event.ctrlKey && event.key === 'r')) {
       fetchCommands();
     }
     if(event.key === 'Enter') {
