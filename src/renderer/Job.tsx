@@ -41,10 +41,10 @@ const Job = () => {
     )
 
     console.log('location.state: ', location.state);
-    if(location?.state?.command) {      
+    if(location?.state?.command) {
       setCommand(location.state.command);
     }
-    if(location?.state?.id) {      
+    if(location?.state?.id) {
       setId(location.state.id);
     }
     if(location?.state?.img) {
@@ -69,14 +69,14 @@ const Job = () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
   }, [handleKeyPress]);
-
+  console.log('jobimage: ', location?.state?.img)
   return (
     <div>
       {(command || id) &&
         <RunJob
           command={command}
           id={id}
-          img={img}
+          img={location?.state?.img}
         />
       }
 

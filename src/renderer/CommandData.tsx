@@ -64,7 +64,9 @@ const CommandData = () => {
 
   const submitJob = async () => {
     const command = location.state;
-    navigate('/job', {state: {command, img}})
+    console.log('cdImg: ', img)
+    console.log('cmonStefan: ', location?.state?.img)
+    navigate('/job', {state: {command, img: location?.state?.img}})
   }
 
   useEffect(() => {

@@ -17,7 +17,7 @@ const ScreenOverlay = () => {
       true
     )
   }, []);
-  
+
   const takeScreenshot = (dimens: any) => {
     window.electron.ipcRenderer.send(
       'take-screenshot',
@@ -27,7 +27,7 @@ const ScreenOverlay = () => {
 
   useEffect(() => {
     const handleScreenshot = async ({img, dimens, screenWidth, screenHeight}: any) => {
-      
+      console.log('handleScreenshot img: ', img);
       let imgData = new Blob([img], { type: 'image/png' });
       const filename = uuidv4()+'.png';
 
@@ -62,7 +62,7 @@ const ScreenOverlay = () => {
       // Set the canvas dimensions to the dimensions of the crop area
       canvas.width = adjustedDimens.width;
       canvas.height = adjustedDimens.height;
-      
+
       // Draw the image onto the canvas, but only the part within the crop area
       context.drawImage(image, adjustedDimens.left, adjustedDimens.top, adjustedDimens.width, adjustedDimens.height, 0, 0, adjustedDimens.width, adjustedDimens.height);
 
@@ -87,7 +87,7 @@ const ScreenOverlay = () => {
         const storedFileUrl = 'https://indigo-vision-images190143-dev.s3.amazonaws.com/public/'+storedFile.key;
 
         console.log('storedFile: ', storedFileUrl);
-        
+
         // navigate('/vision-job',{state: {img: storedFileUrl}})
         navigate('/',{state: {img: storedFileUrl}})
 
@@ -96,9 +96,9 @@ const ScreenOverlay = () => {
       }
 
     };
-  
+
     const removeListener = window.electron.ipcRenderer.onScreenshotCaptured(handleScreenshot);
-  
+
     // Clean up the event listener when the component unmounts
     return () => {
       removeListener();
@@ -115,7 +115,7 @@ const ScreenOverlay = () => {
         selectFromInside={true}
         ratio={0}
         onSelectStart={e => {
-          console.log('onSelectStart e: ', e);                  
+          console.log('onSelectStart e: ', e);
         }}
         onSelectEnd={e => {
           console.log('onSelectEnd e: ', e.rect);

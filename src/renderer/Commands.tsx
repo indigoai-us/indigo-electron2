@@ -158,7 +158,7 @@ const Commands = () => {
     const clipContents = await getClip();
 
     const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
-
+    console.log('commandsimg: ',location?.state?.img);
     if(newCommand.data.length > 0) {
       navigate('/data',{state: {...newCommand, copied: clipContents, img: location?.state?.img}})
     } else {
