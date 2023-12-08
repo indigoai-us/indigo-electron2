@@ -74,7 +74,7 @@ const Message = (props: MessageProps) => {
           openWhenHidden: true,
           signal: controller.signal,
           onmessage(ev) {
-            console.log('ev.data', ev.data);
+            // console.log('ev.data', ev.data);
             const nextToken = !ev.data ? '\n' : ev.data;
             setOutput((o) => {
               const newOutput = o + nextToken;

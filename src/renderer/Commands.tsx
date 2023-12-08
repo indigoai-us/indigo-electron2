@@ -162,7 +162,7 @@ const Commands = () => {
     if(newCommand.data.length > 0) {
       navigate('/data',{state: {...newCommand, copied: clipContents, img: location?.state?.img}})
     } else {
-      navigate('/job',{state: {command: newCommand}})
+      navigate('/job',{state: {command: newCommand, img: location?.state?.img}})
     }
 
   }
