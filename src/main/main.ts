@@ -46,7 +46,6 @@ ipcMain.on('take-screenshot', (event, dimens) => {
     event.reply('screenshot-captured', {img, dimens, screenWidth, screenHeight});
   }).catch((err: any) => console.log('err: ', err));
 
-
 })
 
 ipcMain.on('window-resize', (e, width, height, full, toEdges) => {
@@ -154,7 +153,7 @@ const createWindow = async () => {
     width: 600,
     height: 400,
     transparent: true,
-    vibrancy: 'under-window',
+    // vibrancy: 'under-window',
     visualEffectState: 'active',
     darkTheme: true,
     icon: getAssetPath('icon.ico'),// Set the icon here
@@ -172,7 +171,7 @@ const createWindow = async () => {
    mainWindow.webContents.on('before-input-event', (event, input) => {
     if (input.key.toLowerCase() === 'escape') {
       // mainWindow && mainWindow.close();
-      mainWindow && mainWindow.hide();
+      // mainWindow && mainWindow.hide();
     }
   });
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -189,6 +188,8 @@ const createWindow = async () => {
   });
 
   mainWindow.on('closed', () => {
+    console.log('closed event...');
+
     mainWindow = null;
   });
 
@@ -219,6 +220,8 @@ const createWindow = async () => {
 app.commandLine.appendSwitch('wm-window-animations-disabled');
 
 app.on('window-all-closed', () => {
+  console.log('window-all-closed...');
+
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
@@ -239,16 +242,18 @@ const registerGlobalShortcut = () => {
     })
   }
 
+  const openRoute = async (route: string) => {
+    mainWindow && await mainWindow.webContents.send('open-route', {route})
+    mainWindow && mainWindow.show();
+  }
+
   const ret = globalShortcut.register('Alt+I', () => {
     if (mainWindow === null) {
       log.info('creating window and opening commands...')
       createWindowAndOpenCommands();
     }
     if (mainWindow !== null) {
-      console.log('opening commands...');
-      mainWindow && mainWindow.webContents.send('open-route', {route: ''})
-      mainWindow.show();
-
+      openRoute('');
     }
   })
 
@@ -269,8 +274,7 @@ const registerGlobalShortcut = () => {
       createWindowAndOpenChat();
     }
     if (mainWindow !== null) {
-      mainWindow && mainWindow.webContents.send('open-route', {route: 'open-chat'})
-      mainWindow.show();
+      openRoute('open-chat');
     }
   })
 
@@ -291,11 +295,7 @@ const registerGlobalShortcut = () => {
       createWindowAndOpenOverlay()
     }
     if (mainWindow !== null) {
-      mainWindow.show();
-      mainWindow.webContents.send('open-route', {route: 'overlay'})
-    }
-    if (mainWindow) {
-      mainWindow.webContents.send('open-route', {route: 'overlay'})
+      openRoute('overlay');
     }
   })
 

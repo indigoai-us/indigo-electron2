@@ -49,7 +49,7 @@ const Login = () => {
   };
 
   return (
-    <div className={`${window.electron.environment !== 'darwin' && 'main'} flex flex-col items-center justify-center h-screen`}>
+    <div className={`main flex flex-col items-center justify-center h-screen`}>
       <div className='flex flex-row justify-center items-center'>
         <img width="40" alt="IndigoAI" src={logo} />
         <div className='text-5xl ml-2 relative bottom-1'>Indigo</div>

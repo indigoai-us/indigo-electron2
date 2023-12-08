@@ -65,7 +65,7 @@ export default class MenuBuilder {
         { type: 'separator' },
         {
           label: 'Hide ElectronReact',
-          accelerator: 'Command+H',
+          accelerator: 'Esc',
           selector: 'hide:',
         },
         {
