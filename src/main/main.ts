@@ -308,10 +308,12 @@ const registerGlobalShortcut = () => {
 // const updateExe = path.resolve(appFolder, '..', 'Update.exe')
 // const exeName = path.basename(process.execPath)
 
-app.setLoginItemSettings({
-  openAtLogin: true,
-  // openAsHidden: true,
-})
+if (!isDebug) {
+  app.setLoginItemSettings({
+    openAtLogin: true,
+    // openAsHidden: true,
+  })
+}
 
 app
   .whenReady()
