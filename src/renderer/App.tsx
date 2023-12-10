@@ -12,6 +12,7 @@ import CommandData from './CommandData';
 import ScreenOverlay from './ScreenOverlay';
 import VisionJob from './VisionJob';
 import OpenChatJob from './OpenChatJob';
+import OopsError from './OopsError';
 
 Amplify.configure({ ...config });
 
@@ -57,6 +58,9 @@ export default function App() {
           </Route>
           <Route path='/vision-job' element={<PrivateRoute/>}>
             <Route path="/vision-job" element={<VisionJob />} />
+          </Route>
+          <Route path='/oops-error' element={<PrivateRoute/>}>
+            <Route path="/oops-error" element={<OopsError />} />
           </Route>
           <Route path="/login" element={<Login />} />
         </Routes>

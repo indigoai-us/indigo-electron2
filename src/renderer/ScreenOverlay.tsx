@@ -4,10 +4,12 @@ import Selecto from "react-selecto";
 import { Storage } from 'aws-amplify';
 import { v4 as uuidv4 } from "uuid";
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAppStore } from '../../lib/store';
 
 const ScreenOverlay = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { commands } = useAppStore()
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
@@ -18,6 +20,23 @@ const ScreenOverlay = () => {
       true
     )
   }, []);
+
+  useEffect(() => {
+    if(commands) {
+      const visionCommands = commands.filter((command: any) => command.model.nameCode==='gpt-4-vision-preview');
+      if(visionCommands.length === 0) {
+        navigate('/oops-error', {
+          state: {
+            message: 'No vision commands found',
+            suggestion: 'You can create a vision command in the web app!',
+            link: 'https://app.getindigo.ai/library/command/new',
+            linkText: 'Do it now',
+          }
+        })
+      }
+    }
+
+  }, [commands]);
 
   const takeScreenshot = (dimens: any) => {
     window.electron.ipcRenderer.send(
