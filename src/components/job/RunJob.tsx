@@ -254,7 +254,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
             <span className='mr-2 w-auto'><IconBack/></span>
             <span className='text-gray-400 text-xs'>Back</span>
         </div>
-        <div onClick={() => navigate('/history')} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
+        <div onClick={() => navigate('/')} className='flex flex-row text-white cursor-pointer my-4 mx-8 w-auto'>
             <span className='mr-2 w-auto'><IconList /></span>
             <span className='text-gray-400 text-xs'>Command List</span>
         </div>

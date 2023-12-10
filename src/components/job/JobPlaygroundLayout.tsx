@@ -41,9 +41,9 @@ import Message from './Message';
             className='mt-2 mb-2 bg-indigo-700 rounded-md px-4 py-2 transition-all hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none w-200'
             disabled = {loading}
           >
-            Submit
+            Generate
           </button>
-          <div className="ml-2 text-indigo-500">Ctrl+Enter</div>
+          <div className="ml-2 text-indigo-500">{window.navigator.userAgent.includes('Mac') ? '⌘' : 'Ctrl'}+Enter</div>
         </div>
       </form>
     )
@@ -69,7 +69,7 @@ export default function JobPlaygroundLayout({
   // }, [messages]);
 
   const handleKeyPress = async (event: any) => {
-    if(event.ctrlKey && event.key === 'Enter') {
+    if((window.navigator.userAgent.includes('Mac') && event.metaKey && event.key === 'Enter') || (!window.navigator.userAgent.includes('Mac') && event.ctrlKey && event.key === 'Enter')) {
       console.log('ctrl+enter pressed: ', formRef.current);
       
       if (formRef.current) {

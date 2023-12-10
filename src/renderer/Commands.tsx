@@ -26,6 +26,14 @@ const Commands = () => {
   const [img, setImg] = useState<any>(location?.state?.img);
 
   useEffect(() => {
+    window.electron.ipcRenderer.send(
+      'window-resize',
+      600, // height
+      400  // width
+    )
+
+    inputRef.current && inputRef.current.focus();
+
     const scrollDiv = scrollDivRef.current;
 
     let scrollTimeout: number;
@@ -60,7 +68,6 @@ const Commands = () => {
     if(commands.length === 0) {
       fetchCommands()
     }
-    console.log('location?.state?.img: ', location?.state?.img);
 
     handleLocalCommands(commands);
   }, [commands, location])
@@ -70,10 +77,6 @@ const Commands = () => {
       fetchJobs()
     }
   }, [jobs])
-
-  useEffect(() => {
-    inputRef.current && inputRef.current.focus();
-  }, []);
 
   // const getCommands = async () => {
 
@@ -91,14 +94,6 @@ const Commands = () => {
   //     console.log('error signing in', error);
   //   }
   // }
-
-  useEffect(() => {
-    window.electron.ipcRenderer.send(
-      'window-resize',
-      600, // height
-      400  // width
-    )
-  }, []);
 
   const handleKeyPress = useCallback((event: any) => {
     let newArray = Array.from({ length: 10 }, (value, index) => index);
@@ -159,6 +154,12 @@ const Commands = () => {
 
     const newCommand = highlightedIndex===-1 ? command : localCommands[highlightedIndex];
     console.log('commandsimg: ',location?.state?.img);
+
+    if(newCommand.model.nameCode==='gpt-4-vision-preview' && !location?.state?.img) {
+      navigate('/overlay',{state: {command: newCommand, copied: clipContents}})
+      return;
+    }
+
     if(newCommand.data.length > 0) {
       navigate('/data',{state: {...newCommand, copied: clipContents, img: location?.state?.img}})
     } else {
@@ -176,6 +177,12 @@ const Commands = () => {
       console.log('error signing out: ', error);
     }
   }
+
+  useEffect(() => {
+    if(location?.state?.command) {
+      runCommand(location.state.command);
+    }
+  }, [location.state])
 
   return (
     <div className={`main flex flex-col items-center h-screen justify-between p-2`}>
@@ -205,7 +212,10 @@ const Commands = () => {
             <div className='flex items-center'>
               <h1 className='text-sm'>{command.name}</h1>
               {command.usesCopied &&
-                <div className='text-xs px-1.5 py-0.5 bg-gray-700 align-middle h-5 ml-3 mt-1'>Copied</div>
+                <div className='text-xs px-1.5 py-0.5 bg-gray-700 align-middle h-5 ml-3 mt-1'>Clipboard</div>
+              }
+              {command.model.nameCode==='gpt-4-vision-preview' &&
+                <div className='text-xs px-1.5 py-0.5 bg-gray-700 align-middle h-5 ml-3 mt-1'>Vision</div>
               }
             </div>
             <div>

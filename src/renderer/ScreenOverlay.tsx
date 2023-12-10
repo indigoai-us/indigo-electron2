@@ -3,10 +3,11 @@ import './overlay.css'
 import Selecto from "react-selecto";
 import { Storage } from 'aws-amplify';
 import { v4 as uuidv4 } from "uuid";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ScreenOverlay = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
@@ -88,8 +89,10 @@ const ScreenOverlay = () => {
 
         console.log('storedFile: ', storedFileUrl);
 
+        console.log('ScreenOverlay location state: ', location?.state);        
+
         // navigate('/vision-job',{state: {img: storedFileUrl}})
-        navigate('/',{state: {img: storedFileUrl}})
+        navigate('/',{state: {img: storedFileUrl, command: location?.state?.command, copied: location?.state?.copied}})
 
       } catch (error) {
         console.log("Error uploading file: ", error);
