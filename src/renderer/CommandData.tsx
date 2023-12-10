@@ -92,7 +92,7 @@ const CommandData = () => {
       {/* Command Name */}
       <div>
         <span className="text-md mr-2">{command?.name}</span>
-        <span className='text-xs px-1.5 py-0.5 bg-gray-700 align-middle uppercase'>Clipboard</span>
+        {command?.usesCopied && <span className='text-xs px-1.5 py-0.5 bg-gray-700 align-middle uppercase'>Clipboard</span>}
       </div>
 
       {/* Data */}
@@ -118,12 +118,16 @@ const CommandData = () => {
         })}
 
         {/* Clipboard */}
-        <label className='text-xs mt-3 mb-1 text-white'>
-          Clipboard
-        </label>
-        <div className='text-gray-700 text-xs mb-5 bg-gray-900 bg-opacity-40 py-2 px-2 overflow-hidden h-auto max-h-10'>
-          {copied}
-        </div>
+        {command?.usesCopied && 
+          <>
+            <label className='text-xs mt-3 mb-1 text-white'>
+              Clipboard
+            </label>
+            <div className='text-gray-700 text-xs mb-5 bg-gray-900 bg-opacity-40 py-2 px-2 overflow-hidden h-auto max-h-10'>
+              {copied}
+            </div>          
+          </>
+        }
       </div>
 
       {/* Buttons */}
