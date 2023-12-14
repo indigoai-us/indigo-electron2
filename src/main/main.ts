@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, desktopCapturer } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, systemPreferences, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -35,8 +35,20 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.on('take-screenshot', (event, dimens) => {
-  const {left, top, right, bottom, width, height} = dimens;
+function showScreenRecordingDialog() {
+  const buttonIndex = dialog.showMessageBoxSync({
+    type: 'info',
+    message: 'Screen Recording Permission',
+    detail: 'Our app requires screen recording permission. Please open System Preferences > Security & Privacy > Privacy > Screen Recording and enable the permission for our app.',
+    buttons: ['Open System Preferences', 'Later']
+  });
+
+  if (buttonIndex === 0) {
+    shell.openExternal('x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture');
+  }
+}
+
+const takeScreenshot = async ({event, dimens}: any) => {
   const primaryDisplay = screen.getPrimaryDisplay()
   let screenDimention = primaryDisplay.size
   const screenWidth = screenDimention.width
@@ -45,7 +57,19 @@ ipcMain.on('take-screenshot', (event, dimens) => {
   screenshot({format: 'png'}).then((img: any) => {
     event.reply('screenshot-captured', {img, dimens, screenWidth, screenHeight});
   }).catch((err: any) => console.log('err: ', err));
+}
 
+ipcMain.on('take-screenshot', (event, dimens) => {
+  if (process.platform === 'darwin') {
+    const status = systemPreferences.getMediaAccessStatus('screen');
+    if (status === 'not-determined' || status === 'denied') {
+      showScreenRecordingDialog();
+    } else {
+      takeScreenshot({event, dimens});
+    }
+  } else if (process.platform === 'win32') {
+    takeScreenshot({event, dimens});
+  }
 })
 
 ipcMain.on('window-resize', (e, width, height, full, toEdges) => {
