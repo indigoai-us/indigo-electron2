@@ -19,8 +19,9 @@ const ScreenOverlay = () => {
       true,
       true
     )
+    
   }, []);
-
+  
   useEffect(() => {
     if(commands) {
       const visionCommands = commands.filter((command: any) => command.model.nameCode==='gpt-4-vision-preview');
@@ -47,74 +48,96 @@ const ScreenOverlay = () => {
 
   useEffect(() => {
     const handleScreenshot = async ({img, dimens, screenWidth, screenHeight}: any) => {
-      console.log('handleScreenshot img: ', img);
-      let imgData = new Blob([img], { type: 'image/png' });
-      const filename = uuidv4()+'.png';
-
-      // Create an image element
-      const image = new Image();
-      image.src = URL.createObjectURL(imgData);
-
-      // Wait for the image to load
-      await new Promise(resolve => {
-        image.onload = resolve;
-      });
-
-      // Create a canvas and context
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-
-      if (!context) {
-        throw new Error('Failed to get canvas context');
-      }
-
-      // Calculate the scale factor
-      const scaleFactor = image.width / screenWidth;
-
-      // Adjust the dimens values
-      const adjustedDimens = {
-        left: dimens.left * scaleFactor,
-        top: dimens.top * scaleFactor,
-        width: dimens.width * scaleFactor,
-        height: dimens.height * scaleFactor
-      };
-
-      // Set the canvas dimensions to the dimensions of the crop area
-      canvas.width = adjustedDimens.width;
-      canvas.height = adjustedDimens.height;
-
-      // Draw the image onto the canvas, but only the part within the crop area
-      context.drawImage(image, adjustedDimens.left, adjustedDimens.top, adjustedDimens.width, adjustedDimens.height, 0, 0, adjustedDimens.width, adjustedDimens.height);
-
-      // Convert the canvas back to a Blob
-      const newImgData = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob(blob => {
-          if (blob) {
-            resolve(blob);
-          } else {
-            reject(new Error('Blob creation failed'));
-          }
-        }, 'image/png');
-      });
-
-      const newFile = new File([newImgData], filename, { type: "image/png" })
 
       try {
-        const storedFile = await Storage.put(filename, newFile, {
-          contentType: "image/png", // contentType is optional
+
+        console.log('handleScreenshot img: ', img);
+        let imgData = new Blob([img], { type: 'image/png' });
+        const filename = uuidv4()+'.png';
+  
+        // Create an image element
+        const image = new Image();
+        image.src = URL.createObjectURL(imgData);
+  
+        // Wait for the image to load
+        await new Promise(resolve => {
+          image.onload = resolve;
         });
+  
+        // Create a canvas and context
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+  
+        if (!context) {
+          throw new Error('Failed to get canvas context');
+        }
+  
+        // Calculate the scale factor
+        const scaleFactor = image.width / screenWidth;
+  
+        // Adjust the dimens values
+        const adjustedDimens = {
+          left: dimens.left * scaleFactor,
+          top: dimens.top * scaleFactor,
+          width: dimens.width * scaleFactor,
+          height: dimens.height * scaleFactor
+        };
+  
+        // Set the canvas dimensions to the dimensions of the crop area
+        canvas.width = adjustedDimens.width;
+        canvas.height = adjustedDimens.height;
+  
+        // Draw the image onto the canvas, but only the part within the crop area
+        context.drawImage(image, adjustedDimens.left, adjustedDimens.top, adjustedDimens.width, adjustedDimens.height, 0, 0, adjustedDimens.width, adjustedDimens.height);
 
-        const storedFileUrl = 'https://indigo-vision-images190143-dev.s3.amazonaws.com/public/'+storedFile.key;
+        // Convert the canvas back to a Blob
+        const newImgData = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(blob => {
+            if (blob) {
+              resolve(blob);
+            } else {
+              reject(new Error('Blob creation failed'));
+            }
+          }, 'image/png');
+        });
+  
+        const newFile = new File([newImgData], filename, { type: "image/png" })
+  
+        try {
+          const storedFile = await Storage.put(filename, newFile, {
+            contentType: "image/png", // contentType is optional
+          });
+  
+          const storedFileUrl = 'https://indigo-vision-images190143-dev.s3.amazonaws.com/public/'+storedFile.key;
+  
+          console.log('storedFile: ', storedFileUrl);
+  
+          console.log('ScreenOverlay location state: ', location?.state);        
+  
+          // navigate('/vision-job',{state: {img: storedFileUrl}})
+          navigate('/',{state: {img: storedFileUrl, command: location?.state?.command, copied: location?.state?.copied}})
+  
+        } catch (error: any) {
+          console.log("Error uploading file: ", error);
+          navigate('/oops-error', {
+            state: {
+              message: 'Oops! Something went wrong.',
+              suggestion: error.message
+            }
+          })
+  
+        }
 
-        console.log('storedFile: ', storedFileUrl);
+      } catch (error: any) {
+        console.log('handleScreenshot error: ', error);
 
-        console.log('ScreenOverlay location state: ', location?.state);        
+        navigate('/oops-error', {
+          state: {
+            message: 'Oops! Something went wrong.',
+            suggestion: error.message
+          }
+        })
 
-        // navigate('/vision-job',{state: {img: storedFileUrl}})
-        navigate('/',{state: {img: storedFileUrl, command: location?.state?.command, copied: location?.state?.copied}})
-
-      } catch (error) {
-        console.log("Error uploading file: ", error);
       }
 
     };
