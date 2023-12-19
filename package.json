@@ -190,7 +190,10 @@
     "productName": "IndigoAI",
     "appId": "com.electron.IndigoAI",
     "asar": true,
-    "asarUnpack": "**\\*.{node,dll,bat}",
+    "asarUnpack": [
+      "**\\*.{node,dll,bat}",
+      "node_modules/screenshot-desktop/lib/win32"
+    ],
     "files": [
       "dist",
       "node_modules",
