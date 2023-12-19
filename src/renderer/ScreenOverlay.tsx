@@ -40,6 +40,9 @@ const ScreenOverlay = () => {
   }, [commands]);
 
   const takeScreenshot = (dimens: any) => {
+    window.electron.ipcRenderer.send('log', 
+      { level: 'error', message: 'taking screenshot', object: dimens }
+    );
     window.electron.ipcRenderer.send(
       'take-screenshot',
       dimens
