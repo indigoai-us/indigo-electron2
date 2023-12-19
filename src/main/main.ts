@@ -35,6 +35,16 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+ipcMain.on('log', (event, arg) => {
+  type LogLevel = 'error' | 'warn' | 'info' | 'verbose' | 'debug' | 'silly';
+  const { level, message, object } = arg;
+  if (level in log) {
+    (log[level as LogLevel])(message, object);
+  } else {
+    console.error(`Invalid log level: ${level}`);
+  }
+});
+
 function showScreenRecordingDialog() {
   const buttonIndex = dialog.showMessageBoxSync({
     type: 'info',
@@ -55,8 +65,12 @@ const takeScreenshot = async ({event, dimens}: any) => {
   const screenHeight = screenDimention.height
 
   screenshot({format: 'png'}).then((img: any) => {
+    log.info('screenshot taken...', {dimens, screenWidth, screenHeight});
     event.reply('screenshot-captured', {img, dimens, screenWidth, screenHeight});
-  }).catch((err: any) => console.log('err: ', err));
+  }).catch((err: any) => {
+    log.error('error taking screenshot: ', err);
+    console.log('err: ', err);
+  });
 }
 
 ipcMain.on('take-screenshot', (event, dimens) => {
