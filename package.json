@@ -192,7 +192,10 @@
     "asar": true,
     "asarUnpack": [
       "**\\*.{node,dll,bat}",
-      "node_modules/screenshot-desktop/lib/win32"
+      "node_modules/screenshot-desktop/lib/win32",
+      "node_modules/screenshot-desktop/lib/win32/*",
+      "node_modules/screenshot-desktop/lib/win32/app.manifest",
+      "node_modules/screenshot-desktop/lib/win32/screenCapture_1.3.2.bat"
     ],
     "files": [
       "dist",
