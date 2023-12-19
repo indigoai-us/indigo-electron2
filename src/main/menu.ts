@@ -48,6 +48,10 @@ export default class MenuBuilder {
             this.mainWindow.webContents.inspectElement(x, y);
           },
         },
+        {
+          label: `App Version: ${app.getVersion()}`, // Add this line
+          enabled: false, // Make it unclickable
+        },
       ]).popup({ window: this.mainWindow });
     });
   }

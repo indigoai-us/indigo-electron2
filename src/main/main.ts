@@ -149,6 +149,10 @@ const createTray = () => {
         app.quit()
       }
     },
+    {
+      label: `App Version: ${app.getVersion()}`, // Add this line
+      enabled: false, // Make it unclickable
+    },
   ])
 
   tray.on('click', () => {
