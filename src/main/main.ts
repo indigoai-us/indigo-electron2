@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, systemPreferences, dialog } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, systemPreferences, dialog, desktopCapturer } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -64,13 +64,23 @@ const takeScreenshot = async ({event, dimens}: any) => {
   const screenWidth = screenDimention.width
   const screenHeight = screenDimention.height
 
-  screenshot({format: 'png'}).then((img: any) => {
-    log.info('screenshot taken...', {dimens, screenWidth, screenHeight});
+  desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: screenWidth, height: screenHeight } })
+  .then( sources => {
+    console.log('sources: ', sources[0]);
+    
+    const img = sources[0].thumbnail.toPNG();
     event.reply('screenshot-captured', {img, dimens, screenWidth, screenHeight});
   }).catch((err: any) => {
     log.error('error taking screenshot: ', err);
     console.log('err: ', err);
   });
+  // screenshot({format: 'png'}).then((img: any) => {
+  //   log.info('screenshot taken...', {dimens, screenWidth, screenHeight});
+  //   event.reply('screenshot-captured', {img, dimens, screenWidth, screenHeight});
+  // }).catch((err: any) => {
+  //   log.error('error taking screenshot: ', err);
+  //   console.log('err: ', err);
+  // });
 }
 
 ipcMain.on('take-screenshot', (event, dimens) => {
