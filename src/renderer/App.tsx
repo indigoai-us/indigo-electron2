@@ -13,8 +13,13 @@ import ScreenOverlay from './ScreenOverlay';
 import VisionJob from './VisionJob';
 import OpenChatJob from './OpenChatJob';
 import OopsError from './OopsError';
+import { ClerkProvider } from '@clerk/chrome-extension'
 
 Amplify.configure({ ...config });
+//@ts-ignore
+const PUBLISHABLE_KEY = window.envVars.CLERK_PUBLISHABLE_KEY || '';
+console.log('PUBLISHABLE_KEY: ', PUBLISHABLE_KEY);
+
 
 export default function App() {
 
@@ -36,35 +41,37 @@ export default function App() {
 
   return (
     <div>
-      <Router>
-        <Routes>
-          <Route path='/' element={<PrivateRoute/>}>
-            <Route path="/" element={<Commands />} />
-          </Route>
-          <Route path='/data' element={<PrivateRoute/>}>
-            <Route path="/data" element={<CommandData />} />
-          </Route>
-          <Route path='/job' element={<PrivateRoute/>}>
-            <Route path="/job" element={<Job />} />
-          </Route>
-          <Route path='/open-chat' element={<PrivateRoute/>}>
-            <Route path="/open-chat" element={<OpenChatJob />} />
-          </Route>
-          <Route path='/history' element={<PrivateRoute/>}>
-            <Route path="/history" element={<JobsHistory />} />
-          </Route>
-          <Route path='/overlay' element={<PrivateRoute/>}>
-            <Route path="/overlay" element={<ScreenOverlay />} />
-          </Route>
-          <Route path='/vision-job' element={<PrivateRoute/>}>
-            <Route path="/vision-job" element={<VisionJob />} />
-          </Route>
-          <Route path='/oops-error' element={<PrivateRoute/>}>
-            <Route path="/oops-error" element={<OopsError />} />
-          </Route>
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </Router>
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <Router>
+          <Routes>
+            <Route path='/' element={<PrivateRoute/>}>
+              <Route path="/" element={<Commands />} />
+            </Route>
+            <Route path='/data' element={<PrivateRoute/>}>
+              <Route path="/data" element={<CommandData />} />
+            </Route>
+            <Route path='/job' element={<PrivateRoute/>}>
+              <Route path="/job" element={<Job />} />
+            </Route>
+            <Route path='/open-chat' element={<PrivateRoute/>}>
+              <Route path="/open-chat" element={<OpenChatJob />} />
+            </Route>
+            <Route path='/history' element={<PrivateRoute/>}>
+              <Route path="/history" element={<JobsHistory />} />
+            </Route>
+            <Route path='/overlay' element={<PrivateRoute/>}>
+              <Route path="/overlay" element={<ScreenOverlay />} />
+            </Route>
+            <Route path='/vision-job' element={<PrivateRoute/>}>
+              <Route path="/vision-job" element={<VisionJob />} />
+            </Route>
+            <Route path='/oops-error' element={<PrivateRoute/>}>
+              <Route path="/oops-error" element={<OopsError />} />
+            </Route>
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </Router>
+      </ClerkProvider>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import './App.css'
 import { useLocation, useNavigate } from 'react-router-dom';
 import RunJob from '../components/job/RunJob';
 import { useAppStore } from '../../lib/store';
+import { useAuth } from '@clerk/clerk-react';
 
 const baseCommand = {
   tokens: 4096,
@@ -23,10 +24,11 @@ const VisionJob = () => {
   const [openEnded, setOpenEnded] = useState(false);
   const [command, setCommand] = useState<any>(null);
   const [img, setImg] = useState<any>(location?.state?.img);
+  const { getToken } = useAuth();
 
   useEffect(() => {
     if(models.length === 0) {
-      fetchModels()
+      fetchModels(getToken)
     }
     setLocalModels(models)
   }, [models])

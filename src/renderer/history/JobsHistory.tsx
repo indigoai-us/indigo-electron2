@@ -6,6 +6,7 @@ import { API, Auth } from "aws-amplify";
 import '../App.css'
 import IconBack from "../icons/IconBack";
 import { useAppStore } from "../../../lib/store";
+import { useAuth, useClerk } from "@clerk/clerk-react";
 
 const dayMap: {[key: number]: string} = {
   1: 'SUN',
@@ -37,6 +38,8 @@ const JobsHistory = () => {
   const navigate = useNavigate();
   const { jobs, fetchJobs } = useAppStore()
   const [localJobs, setLocalJobs] = useState<any>([]);
+  const { getToken } = useAuth();
+  const { user } = useClerk();
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
@@ -45,7 +48,7 @@ const JobsHistory = () => {
       768  // width
     )
 
-    fetchJobs()
+    fetchJobs(user, getToken)
   }, [])
 
   useEffect(() => {

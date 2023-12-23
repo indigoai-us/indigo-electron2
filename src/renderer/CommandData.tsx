@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import './App.css'
 import { useLocation, useNavigate } from 'react-router-dom';
-import createJob from '../utils/createJob';
 import IconBack from './icons/IconBack';
 
 const CommandData = () => {

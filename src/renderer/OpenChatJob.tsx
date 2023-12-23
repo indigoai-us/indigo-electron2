@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import RunJob from '../components/job/RunJob';
 import createJob from '../utils/createJob';
 import { useAppStore } from '../../lib/store';
+import { useAuth } from '@clerk/clerk-react';
 
 const OpenChatJob = () => {
   const location = useLocation();
@@ -13,10 +14,11 @@ const OpenChatJob = () => {
   const [localModels, setLocalModels] = useState(models);
   const [openEnded, setOpenEnded] = useState(false);
   const [command, setCommand] = useState<any | null>(null);
+  const { getToken } = useAuth();
 
   useEffect(() => {
     if(models.length === 0) {
-      fetchModels()
+      fetchModels(getToken)
     }
     setLocalModels(models)
   }, [models])
@@ -85,7 +87,7 @@ const OpenChatJob = () => {
       usesCopied: true,
       data: []
     }
-    const job = await createJob({command: newCommand});
+    const job = await createJob({command: newCommand, getToken});
     // console.log('job: ', job);
     setId(job.id);
   }

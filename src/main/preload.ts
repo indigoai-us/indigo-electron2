@@ -43,4 +43,10 @@ const electronHandler = {
 
 contextBridge.exposeInMainWorld('electron', electronHandler);
 
+console.log('preload env var:', process.env.CLERK_PUBLISHABLE_KEY);
+
+contextBridge.exposeInMainWorld('envVars', {
+  CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY
+});
+
 export type ElectronHandler = typeof electronHandler;

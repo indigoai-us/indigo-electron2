@@ -1,6 +1,7 @@
 import { API } from "aws-amplify";
 import { Auth } from "aws-amplify";
 import { StateCreator } from "zustand";
+import useFetch from "../../src/utils/useFetch";
 
 export interface Command {
     data: any;
@@ -11,23 +12,17 @@ export interface Command {
 
 export interface CommandSlice {
     commands: Command[];
-    fetchCommands: () => void;
+    fetchCommands: (getToken: any) => void;
     clearCommands: () => void;
 }
 
 export const createCommandSlice: StateCreator<CommandSlice> = (set) => ({
-    commands: [],
-    fetchCommands: async () => {
-      const user = await Auth.currentAuthenticatedUser();
-      const commandsData = await API.get('be1', '/commands', {
-        headers: {
-          custom_header: `Bearer ${user.signInUserSession.idToken.jwtToken}`, // get jwtToken
-        },
-        queryStringParameters: {sub: user.attributes.sub}
-      }).catch((error: any) => console.log(error.response));
-      const commands = commandsData?.data;
-      console.log('zustand createCommandsSlice commands: ', commands);
-      set({ commands })
-    },
-    clearCommands: () => set({ commands: [] }),
+  commands: [],
+  fetchCommands: async (getToken: any) => {
+    const gotCommands = await useFetch('/commands', 'GET', null, getToken);
+    console.log('zustand gotCommands commands: ', gotCommands);
+    const commands = gotCommands?.data;
+    set({ commands })
+  },
+  clearCommands: () => set({ commands: [] })
 })

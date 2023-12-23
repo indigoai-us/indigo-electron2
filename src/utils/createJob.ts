@@ -1,8 +1,9 @@
 import { API, Auth } from "aws-amplify";
 import getClip from "./getClip";
 import { v4 as uuidv4 } from "uuid";
+import useFetch from "./useFetch";
 
-const createJob = async ({command, img}: any) => {
+const createJob = async ({command, img, getToken}: any) => {
   // console.log('createJob', command);
 
   const copied = await getClip();
@@ -25,15 +26,17 @@ const createJob = async ({command, img}: any) => {
 
   console.log('body', body);
 
-  const user = await Auth.currentAuthenticatedUser();
-  const createdJob = await API.post('be1', '/jobs', {
-    headers: {
-      custom_header: `Bearer ${user?.signInUserSession?.accessToken?.jwtToken}`, // get jwtToken
-    },
-    body
-  }).catch((error: any) => console.log(error.response));
+  const createdJob = await useFetch('/jobs', 'POST', body, getToken);
 
-  // console.log('createdJob', createdJob);
+  // const user = await Auth.currentAuthenticatedUser();
+  // const createdJob = await API.post('be1', '/jobs', {
+  //   headers: {
+  //     custom_header: `Bearer ${user?.signInUserSession?.accessToken?.jwtToken}`, // get jwtToken
+  //   },
+  //   body
+  // }).catch((error: any) => console.log(error.response));
+
+  console.log('createdJob', createdJob);
 
   return createdJob;
 

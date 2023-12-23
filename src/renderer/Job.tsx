@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import './App.css'
 import { useLocation, useNavigate } from 'react-router-dom';
 import RunJob from '../components/job/RunJob';
-import createJob from '../utils/createJob';
 import { useAppStore } from '../../lib/store';
+import { useAuth } from '@clerk/clerk-react';
 
 const baseCommand = {
   tokens: 4096,
@@ -25,10 +25,11 @@ const Job = () => {
   const [openEnded, setOpenEnded] = useState(false);
   const [command, setCommand] = useState<any | null>(null);
   const [img, setImg] = useState<any | null>(null);
+  const { getToken } = useAuth();
 
   useEffect(() => {
     if(models.length === 0) {
-      fetchModels()
+      fetchModels(getToken)
     }
     setLocalModels(models)
   }, [models])

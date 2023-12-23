@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/icons/512x512.png';
 import './App.css'
 import { useAppStore } from '../../lib/store';
+import { SignIn, useAuth } from '@clerk/clerk-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { fetchCommands } = useAppStore()
   const emailRef = useRef<HTMLInputElement | null>(null);
+  const { getToken } = useAuth();
 
   useEffect(() => {
     if (emailRef.current) {
@@ -36,7 +38,7 @@ const Login = () => {
     try {
       await Auth.signIn(email, password).then((user: any) => {
         console.log('user: ', user);
-        fetchCommands();
+        fetchCommands(getToken);
         navigate('/');
         setIsLoading(false);
         return user;
@@ -54,7 +56,8 @@ const Login = () => {
         <img width="40" alt="IndigoAI" src={logo} />
         <div className='text-5xl ml-2 relative bottom-1'>Indigo</div>
       </div>
-      <form className="mt-6" onSubmit={handleLogin}>
+      <SignIn redirectUrl="/" />
+      {/* <form className="mt-6" onSubmit={handleLogin}>
         <div className="mb-4">
           <label
             htmlFor="email"
@@ -93,7 +96,7 @@ const Login = () => {
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </div>
-      </form>
+      </form> */}
       <div className='flex-col content-center'>
         <a
           href="https://app.getindigo.ai/create-account"
