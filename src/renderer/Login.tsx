@@ -15,6 +15,10 @@ const Login = () => {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const { getToken } = useAuth();
 
+  window.electron.ipcRenderer.send('log', 
+    { level: 'error', message: 'loading login', object: 'this log is in Login component load' }
+  );
+
   useEffect(() => {
     if (emailRef.current) {
       emailRef.current.focus();
@@ -36,7 +40,16 @@ const Login = () => {
         <div className='text-5xl ml-2 relative bottom-1'>Indigo</div>
       </div>
       <div className='text-center text-sm mt-6'>
-        <SignIn redirectUrl="/" signUpUrl="/sign-up"/>
+        {/* <SignIn redirectUrl="/" signUpUrl="/sign-up"/> */}
+        <a
+          href="http://localhost:3000/desktop-auth"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <div className='text-center text-sm mt-2'>
+            Authenticate
+          </div>
+        </a>
       </div>
       <div className='flex-col content-center mt-4'>
         <a

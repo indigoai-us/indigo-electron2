@@ -19,8 +19,11 @@ import { dark } from '@clerk/themes';
 const PUBLISHABLE_KEY = window.envVars.CLERK_PUBLISHABLE_KEY || '';
 console.log('PUBLISHABLE_KEY: ', PUBLISHABLE_KEY);
 
-
 export default function App() {
+
+  window.electron.ipcRenderer.send('log', 
+    { level: 'error', message: 'loading app', object: PUBLISHABLE_KEY }
+  );
 
   useEffect(() => {
     console.log('window.environment: ', window.electron.environment);
@@ -34,7 +37,10 @@ export default function App() {
 
   return (
     <div>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ baseTheme: dark }} >
+      <ClerkProvider 
+        publishableKey="pk_test_dGhhbmtmdWwtZmluY2gtODEuY2xlcmsuYWNjb3VudHMuZGV2JA" 
+        appearance={{ baseTheme: dark }} 
+      >
         <Router>
           <Routes>
             <Route path='/' element={<PrivateRoute/>}>

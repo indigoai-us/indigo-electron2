@@ -19,6 +19,10 @@ import screenshot from 'screenshot-desktop';
 const config = require("dotenv");
 config.config();
 
+const logfile = "C:/Users/Public/indigo-renderer.txt"
+app.commandLine.appendSwitch('log-file', logfile);
+app.commandLine.appendSwitch('enable-logging');
+
 class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
@@ -199,6 +203,8 @@ const createWindow = async () => {
   if(!tray) {
     createTray();
   }
+
+  log.info('main env var:', process.env.CLERK_PUBLISHABLE_KEY);
 
   mainWindow = new BrowserWindow({
     show: false,
