@@ -1,5 +1,3 @@
-import { API } from "aws-amplify";
-import { Auth } from "aws-amplify";
 import { StateCreator } from "zustand";
 import useFetch from "../../src/utils/useFetch";
 

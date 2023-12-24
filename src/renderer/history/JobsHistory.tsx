@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useState } from "react";
 import HistoryRow from "./HistoryRow";
 import { useNavigate } from "react-router-dom";
-import { API, Auth } from "aws-amplify";
 import '../App.css'
 import IconBack from "../icons/IconBack";
 import { useAppStore } from "../../../lib/store";

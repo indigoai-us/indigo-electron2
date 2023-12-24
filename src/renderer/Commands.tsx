@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Auth, API } from 'aws-amplify';
 import { useLocation, useNavigate } from 'react-router-dom';
-import logo from '../../assets/images/IndigoLogoHorizontal2.png';
 import './App.css'
 import getClip from '../utils/getClip';
 import IconArrowDown from './icons/IconArrowDown';
@@ -175,8 +173,6 @@ const Commands = () => {
 
   const handleLogout = async () => {
     try {
-      const loggedOut = await Auth.signOut();
-      console.log('loggedOut: ', loggedOut);
       signOut(() => navigate("/login"))
       // navigate('/login');
     } catch (error) {
@@ -225,7 +221,7 @@ const Commands = () => {
               }
             </div>
             <div>
-              <h1>{index}</h1>
+              {/* <h1>{index}</h1> */}
             </div>
           </div>
         ))}

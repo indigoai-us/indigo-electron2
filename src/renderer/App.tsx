@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
 import { MemoryRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { Amplify, Auth, API } from 'aws-amplify';
-import config from '../aws-exports-with-auth';
 import Login from './Login';
 import PrivateRoute from './PrivateRoute';
 import './App.css'
@@ -14,20 +12,15 @@ import VisionJob from './VisionJob';
 import OpenChatJob from './OpenChatJob';
 import OopsError from './OopsError';
 import { ClerkProvider } from '@clerk/chrome-extension'
+import SignUp from './SignUp';
+import { dark } from '@clerk/themes';
 
-Amplify.configure({ ...config });
 //@ts-ignore
 const PUBLISHABLE_KEY = window.envVars.CLERK_PUBLISHABLE_KEY || '';
 console.log('PUBLISHABLE_KEY: ', PUBLISHABLE_KEY);
 
 
 export default function App() {
-
-  useEffect(() => {
-    Auth.currentAuthenticatedUser()
-      .then((user) => console.log({ user }))
-      .catch((err) => console.log({ err }));
-  }, []);
 
   useEffect(() => {
     console.log('window.environment: ', window.electron.environment);
@@ -41,7 +34,7 @@ export default function App() {
 
   return (
     <div>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY} appearance={{ baseTheme: dark }} >
         <Router>
           <Routes>
             <Route path='/' element={<PrivateRoute/>}>
@@ -65,9 +58,8 @@ export default function App() {
             <Route path='/vision-job' element={<PrivateRoute/>}>
               <Route path="/vision-job" element={<VisionJob />} />
             </Route>
-            <Route path='/oops-error' element={<PrivateRoute/>}>
-              <Route path="/oops-error" element={<OopsError />} />
-            </Route>
+            <Route path="/oops-error" element={<OopsError />} />
+            <Route path="/sign-up" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
           </Routes>
         </Router>

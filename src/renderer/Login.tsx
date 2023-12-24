@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { Auth, API } from 'aws-amplify';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/icons/512x512.png';
 import './App.css'
@@ -26,29 +25,9 @@ const Login = () => {
     window.electron.ipcRenderer.send(
       'window-resize',
       600, // width
-      600  // height
+      700  // height
     )
   }, []);
-
-  const handleLogin = async (e: any) => {
-    e.preventDefault();
-    setIsLoading(true);
-    console.log('login email: ', email);
-    console.log('login password: ', password);
-    try {
-      await Auth.signIn(email, password).then((user: any) => {
-        console.log('user: ', user);
-        fetchCommands(getToken);
-        navigate('/');
-        setIsLoading(false);
-        return user;
-      });
-    } catch (error) {
-      console.log('error signing in', error);
-      setLoginIncorrect(true);
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className={`main flex flex-col items-center justify-center h-screen`}>
@@ -56,48 +35,10 @@ const Login = () => {
         <img width="40" alt="IndigoAI" src={logo} />
         <div className='text-5xl ml-2 relative bottom-1'>Indigo</div>
       </div>
-      <SignIn redirectUrl="/" />
-      {/* <form className="mt-6" onSubmit={handleLogin}>
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-normal text-slate-300"
-          >
-            Email
-          </label>
-          <input
-            ref={emailRef}
-            type="email"
-            name="email"
-            onChange={(e) => setEmail(e.target.value)}
-            className="block w-full px-4 py-2 mt-2 text-slate-300 backdrop-brightness-90 bg-transparent outline-none  border rounded-md border-zinc-700 hover:border-zinc-500 focus:border-indigo-500  "
-          />
-          <label
-            htmlFor="password"
-            className="block text-sm font-normal text-slate-300 mt-3"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            className="block w-full px-4 py-2 mt-2 text-slate-300 backdrop-brightness-90 bg-transparent outline-none  border rounded-md border-zinc-700 hover:border-zinc-500 focus:border-indigo-500  "
-          />
-        </div>
-
-        <div className="Hello">
-          <button
-            type="submit"
-            className='bg-indigo-700 rounded-md px-4 py-2 transition-all hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none'
-            style={{width: '100%'}}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Logging in...' : 'Login'}
-          </button>
-        </div>
-      </form> */}
-      <div className='flex-col content-center'>
+      <div className='text-center text-sm mt-6'>
+        <SignIn redirectUrl="/" signUpUrl="/sign-up"/>
+      </div>
+      <div className='flex-col content-center mt-4'>
         <a
           href="https://app.getindigo.ai/create-account"
           target="_blank"

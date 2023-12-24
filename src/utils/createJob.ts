@@ -1,4 +1,3 @@
-import { API, Auth } from "aws-amplify";
 import getClip from "./getClip";
 import { v4 as uuidv4 } from "uuid";
 import useFetch from "./useFetch";

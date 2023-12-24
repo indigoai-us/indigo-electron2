@@ -1,10 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
 import './overlay.css'
 import Selecto from "react-selecto";
-import { Storage } from 'aws-amplify';
 import { v4 as uuidv4 } from "uuid";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../lib/store';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+
+//@ts-ignore
+console.log('window.envVars.AWS_ACCESS_KEY_ID: ', window.envVars.AWS_ACCESS_KEY_ID);
+//@ts-ignore
+console.log('window.envVars.AWS_SECRET_ACCESS_KEY: ', window.envVars.AWS_SECRET_ACCESS_KEY);
+
+const client = new S3Client({ 
+  region: "us-east-1",
+  credentials: {
+    //@ts-ignore
+    accessKeyId: window.envVars.AWS_ACCESS_KEY_ID,
+    //@ts-ignore
+    secretAccessKey: window.envVars.AWS_SECRET_ACCESS_KEY
+  }
+}); // replace REGION with your AWS region
 
 const ScreenOverlay = () => {
   const navigate = useNavigate();
@@ -107,11 +122,21 @@ const ScreenOverlay = () => {
         const newFile = new File([newImgData], filename, { type: "image/png" })
   
         try {
-          const storedFile = await Storage.put(filename, newFile, {
-            contentType: "image/png", // contentType is optional
+
+          const command = new PutObjectCommand({
+            Bucket: "indigo-vision-images190143-dev", // replace BUCKET_NAME with your bucket name
+            Key: "public/"+filename, // replace FILE_NAME with the name you want to give to the file
+            Body: newFile, // replace FILE_CONTENT with the content of the file
           });
+
+          const response = await client.send(command);
+          console.log("Success", response);          
+
+          // const storedFile = await Storage.put(filename, newFile, {
+          //   contentType: "image/png", // contentType is optional
+          // });
   
-          const storedFileUrl = 'https://indigo-vision-images190143-dev.s3.amazonaws.com/public/'+storedFile.key;
+          const storedFileUrl = 'https://indigo-vision-images190143-dev.s3.amazonaws.com/public/'+filename;
   
           console.log('storedFile: ', storedFileUrl);
   
