@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/icons/512x512.png';
 import './App.css'
 import { useAppStore } from '../../lib/store';
-import { SignIn, useAuth } from '@clerk/clerk-react';
+import { useAuth, useSignIn, useUser } from '@clerk/clerk-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -14,6 +14,11 @@ const Login = () => {
   const { fetchCommands } = useAppStore()
   const emailRef = useRef<HTMLInputElement | null>(null);
   const { getToken } = useAuth();
+  const location = useLocation();
+  const [signInToken, setSignInToken] = useState(null);
+  const { signIn, setActive } = useSignIn();
+  const { user: clerkUser } = useUser();
+  const [user, setUser] = useState<any>(null);
 
   window.electron.ipcRenderer.send('log', 
     { level: 'error', message: 'loading login', object: 'this log is in Login component load' }
@@ -33,6 +38,44 @@ const Login = () => {
     )
   }, []);
 
+  useEffect(() => {
+    
+    const trySignIn = async () => {      
+      try {
+        console.log('user: ', user);
+        if(user) {
+          navigate('/');
+          return;
+        } else {
+          const token = location?.state?.token;
+          console.log('token: ', token);
+          if(token) {
+            const signInResponse = await signIn?.create({strategy: 'ticket', ticket: token});
+            console.log('signInResponse: ', signInResponse);
+            if(setActive) {
+              await setActive({
+                session: signInResponse?.createdSessionId,
+              });
+            } else {
+              console.log('no setActive');
+            }
+            setUser(signInResponse?.userData);
+            return;
+          }
+        }
+      } catch (error: any) {
+        console.log('error: ', error);
+      }
+    }
+    trySignIn();
+  }, [location, user, setActive]);
+
+  useEffect(() => {
+    if(clerkUser) {
+      setUser(clerkUser);
+    }
+  }, [clerkUser]);
+
   return (
     <div className={`main flex flex-col items-center justify-center h-screen`}>
       <div className='flex flex-row justify-center items-center'>
@@ -42,13 +85,15 @@ const Login = () => {
       <div className='text-center text-sm mt-6'>
         {/* <SignIn redirectUrl="/" signUpUrl="/sign-up"/> */}
         <a
-          href="http://localhost:3000/desktop-auth"
+          href="https://app2.getindigo.ai/desktop-auth"
           target="_blank"
           rel="noreferrer"
         >
-          <div className='text-center text-sm mt-2'>
+          <button
+            className='mt-2 mb-2 bg-indigo-700 rounded-md px-4 py-2 transition-all hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none w-200'
+          >
             Authenticate
-          </div>
+          </button>
         </a>
       </div>
       <div className='flex-col content-center mt-4'>

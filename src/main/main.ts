@@ -9,19 +9,21 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, systemPreferences, dialog, desktopCapturer } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, nativeImage, Tray, Menu, globalShortcut, screen, systemPreferences, dialog, desktopCapturer, session } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import fs from 'fs';
-import screenshot from 'screenshot-desktop';
-const config = require("dotenv");
-config.config();
+const dotenv = require("dotenv");
+dotenv.config({
+  path: app.isPackaged
+      ? path.join(process.resourcesPath, '.env')
+      : path.resolve(process.cwd(), '.env'),
+});
 
-const logfile = "C:/Users/Public/indigo-renderer.txt"
-app.commandLine.appendSwitch('log-file', logfile);
-app.commandLine.appendSwitch('enable-logging');
+// const logfile = "C:/Users/Public/indigo-renderer.txt"
+// app.commandLine.appendSwitch('log-file', logfile);
+// app.commandLine.appendSwitch('enable-logging');
 
 class AppUpdater {
   constructor() {
@@ -232,6 +234,7 @@ const createWindow = async () => {
       // mainWindow && mainWindow.hide();
     }
   });
+
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {
@@ -289,6 +292,11 @@ app.on('window-all-closed', () => {
   }
 });
 
+const openRoute = async (route: string) => {
+  mainWindow && await mainWindow.webContents.send('open-route', {route})
+  mainWindow && mainWindow.show();
+}
+
 const registerGlobalShortcut = () => {
 
   const createWindowAndOpenCommands = async  () => {
@@ -298,11 +306,6 @@ const registerGlobalShortcut = () => {
       await mainWindow?.webContents.send('open-route', {route: ''})
       mainWindow?.show();
     })
-  }
-
-  const openRoute = async (route: string) => {
-    mainWindow && await mainWindow.webContents.send('open-route', {route})
-    mainWindow && mainWindow.show();
   }
 
   const ret = globalShortcut.register('Alt+I', () => {
@@ -373,6 +376,47 @@ if (!isDebug) {
   })
 }
 
+const createWindowAndSignInToken = async  (token: any) => {
+  await createWindow()
+  console.log('creating window and opening chat...')
+  mainWindow?.once('ready-to-show', () => {
+    mainWindow?.webContents.send('sign-in-token', {token})
+  })
+}
+
+const handleSignInToken = async (token: any) => {
+  if (mainWindow === null) {
+    createWindowAndSignInToken(token);
+  }
+  if (mainWindow !== null) {
+    mainWindow && await mainWindow.webContents.send('sign-in-token', {token})
+    mainWindow && mainWindow.show();  
+  }
+}
+
+if(process.platform === 'win32') {
+  const gotTheLock = app.requestSingleInstanceLock()
+
+  if (!gotTheLock) {
+    app.quit()
+  } else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+      // Someone tried to run a second instance, we should focus our window.
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore()
+        mainWindow.focus()
+      }
+      const token = commandLine.pop()?.replace('indigo://auth/sign-in/', '');
+      handleSignInToken(token);
+    })
+  }
+} else {
+  app.on('open-url', (event, url) => {
+    const token = url?.replace('indigo://auth/sign-in/', '')
+    handleSignInToken(token);
+  })
+}
+
 app
   .whenReady()
   .then(() => {
@@ -386,5 +430,41 @@ app
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
     });
+
+    app.removeAsDefaultProtocolClient('indigo');
+
+    // If we are running a non-packaged version of the app && on windows
+    if (process.argv.length >= 2) {
+      app.setAsDefaultProtocolClient('indigo', process.execPath, [
+        '-r',
+        path.join(
+          __dirname,
+          '..',
+          '..',
+          'node_modules',
+          'ts-node/register/transpile-only'
+        ),
+        path.join(__dirname, '..', '..'),
+      ]);
+    } else {
+      app.setAsDefaultProtocolClient('indigo');
+    }
+
+    if (process.env.NODE_ENV !== 'development') {
+      const filter = {
+          urls: ['*://*.clerk.accounts.dev/*']
+      };
+      session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+          details.requestHeaders['Origin'] = `file:///${path.join(
+              __dirname,
+              '../renderer/index.html'
+          )}`.replaceAll('\\', '/');
+          details.requestHeaders['Referer'] = `file:///${path.join(
+              __dirname,
+              '../renderer/index.html'
+          )}`.replaceAll('\\', '/');
+          callback({ requestHeaders: details.requestHeaders });
+      });
+    }
   })
   .catch(console.log);

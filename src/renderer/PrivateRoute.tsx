@@ -14,11 +14,25 @@ export default function PrivateRoute({ children, ...rest }: any) {
     };
   
     window.electron.ipcRenderer.on('open-route', openRoute);
+
+    const finishSignInToken = (payload: any) => {
+      navigate('/login',
+      {
+        state: { token: payload.token }
+      })
+    };
+  
+    window.electron.ipcRenderer.on('sign-in-token', finishSignInToken);
   
     return () => {
       window.electron.ipcRenderer.removeListener('open-route', openRoute);
+      window.electron.ipcRenderer.removeListener('sign-in-token', finishSignInToken);
     };
   }, [navigate]);
+
+  useEffect(() => {
+    console.log('privateRoute user: ', user);
+  }, [user]);    
 
   return isLoaded ? (user ? <Outlet /> : <Navigate to="/login" />) : null;
 }

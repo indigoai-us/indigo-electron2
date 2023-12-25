@@ -27,6 +27,9 @@ const Commands = () => {
   const { user } = useClerk();
   const [gotJobs, setGotJobs] = useState(false);
 
+  console.log('loading commands...');
+  
+
   useEffect(() => {
     window.electron.ipcRenderer.send(
       'window-resize',

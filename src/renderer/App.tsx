@@ -11,9 +11,10 @@ import ScreenOverlay from './ScreenOverlay';
 import VisionJob from './VisionJob';
 import OpenChatJob from './OpenChatJob';
 import OopsError from './OopsError';
-import { ClerkProvider } from '@clerk/chrome-extension'
+import { ClerkProvider } from '@clerk/clerk-react'
 import SignUp from './SignUp';
 import { dark } from '@clerk/themes';
+import Clerk from "@clerk/clerk-js";
 
 //@ts-ignore
 const PUBLISHABLE_KEY = window.envVars.CLERK_PUBLISHABLE_KEY || '';
@@ -37,7 +38,8 @@ export default function App() {
 
   return (
     <div>
-      <ClerkProvider 
+      <ClerkProvider
+        Clerk={Clerk}
         publishableKey="pk_test_dGhhbmtmdWwtZmluY2gtODEuY2xlcmsuYWNjb3VudHMuZGV2JA" 
         appearance={{ baseTheme: dark }} 
       >

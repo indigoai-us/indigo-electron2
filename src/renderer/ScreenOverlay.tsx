@@ -6,25 +6,25 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../lib/store';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
-//@ts-ignore
-console.log('window.envVars.AWS_ACCESS_KEY_ID: ', window.envVars.AWS_ACCESS_KEY_ID);
-//@ts-ignore
-console.log('window.envVars.AWS_SECRET_ACCESS_KEY: ', window.envVars.AWS_SECRET_ACCESS_KEY);
-
-const client = new S3Client({ 
-  region: "us-east-1",
-  credentials: {
-    //@ts-ignore
-    accessKeyId: window.envVars.AWS_ACCESS_KEY_ID,
-    //@ts-ignore
-    secretAccessKey: window.envVars.AWS_SECRET_ACCESS_KEY
-  }
-}); // replace REGION with your AWS region
-
 const ScreenOverlay = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { commands } = useAppStore()
+
+  //@ts-ignore
+  console.log('window.envVars.AWS_ACCESS_KEY_ID: ', window.envVars.AWS_ACCESS_KEY_ID);
+  //@ts-ignore
+  console.log('window.envVars.AWS_SECRET_ACCESS_KEY: ', window.envVars.AWS_SECRET_ACCESS_KEY);
+
+  const client = new S3Client({ 
+    region: "us-east-1",
+    credentials: {
+      //@ts-ignore
+      accessKeyId: window.envVars.AWS_ACCESS_KEY_ID,
+      //@ts-ignore
+      secretAccessKey: window.envVars.AWS_SECRET_ACCESS_KEY
+    }
+  }); // replace REGION with your AWS region
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
