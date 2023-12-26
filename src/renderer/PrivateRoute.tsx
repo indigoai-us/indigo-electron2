@@ -23,7 +23,7 @@ export default function PrivateRoute({ children, ...rest }: any) {
     };
   
     window.electron.ipcRenderer.on('sign-in-token', finishSignInToken);
-  
+      
     return () => {
       window.electron.ipcRenderer.removeListener('open-route', openRoute);
       window.electron.ipcRenderer.removeListener('sign-in-token', finishSignInToken);

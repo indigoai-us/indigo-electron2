@@ -19,13 +19,8 @@ import Standby from './Standby';
 
 //@ts-ignore
 const PUBLISHABLE_KEY = window.envVars.CLERK_PUBLISHABLE_KEY || '';
-console.log('PUBLISHABLE_KEY: ', PUBLISHABLE_KEY);
 
 export default function App() {
-
-  window.electron.ipcRenderer.send('log', 
-    { level: 'error', message: 'loading app', object: PUBLISHABLE_KEY }
-  );
 
   useEffect(() => {
     console.log('window.environment: ', window.electron.environment);
@@ -41,7 +36,7 @@ export default function App() {
     <div>
       <ClerkProvider
         Clerk={Clerk}
-        publishableKey="pk_test_dGhhbmtmdWwtZmluY2gtODEuY2xlcmsuYWNjb3VudHMuZGV2JA" 
+        publishableKey={PUBLISHABLE_KEY} 
         appearance={{ baseTheme: dark }} 
       >
         <Router>
