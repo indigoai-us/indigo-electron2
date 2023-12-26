@@ -24,7 +24,9 @@ const Message = (props: MessageProps) => {
   const [inflight, setInflight] = useState(false);
   const [error, setError] = useState('');
   const [controller, setController] = useState(new AbortController());
+  const [isStarted, setIsStarted] = useState(false);
   const outputRef = useRef(output);
+  const [text, setText] = useState('');
 
   useEffect(() => {
     outputRef.current = output;
@@ -75,6 +77,9 @@ const Message = (props: MessageProps) => {
           signal: controller.signal,
           onmessage(ev) {
             // console.log('ev.data', ev.data);
+            if(!isStarted) {
+              setIsStarted(true);
+            }
             const nextToken = !ev.data ? '\n' : ev.data;
             setOutput((o) => {
               const newOutput = o + nextToken;
@@ -84,6 +89,7 @@ const Message = (props: MessageProps) => {
           },
           onclose() {
             console.log('onclose');
+            setIsStarted(true);
             finishMessage({index, output: outputRef.current});
             // setOutput((o) => {
             //   const newOutput = o === '' ? 'I\'m sorry, it appears that something has gone wrong. This is generally due to token limitations. Please resubmit your Command request.' : o;
@@ -100,6 +106,7 @@ const Message = (props: MessageProps) => {
       } finally {
         setInflight(false);
         setTopLevelLoading(false);
+        setIsStarted(true);
       }
     },
     [input, stream, inflight, output]
@@ -118,10 +125,14 @@ const Message = (props: MessageProps) => {
     setController(new AbortController());
   }
 
-  // const handleSubmitInput = async () => {
-  //   await submitInput();
-  //   handleFinishOutput(index);
-  // }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setText(prevText => prevText + '.');
+    }, 200);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div
@@ -135,7 +146,13 @@ const Message = (props: MessageProps) => {
           remarkPlugins={[remarkMath, rehypeKatex]}
         > */}
         <code>
-          {output}
+          {messageType !== 'user' && !isStarted ? 
+            <div
+              className="animate-pulse rounded-md bg-primary/10 w-full h-4"
+            >{text}</div>        
+            :
+            output
+          }
         </code>
         {
           error !== '' &&
