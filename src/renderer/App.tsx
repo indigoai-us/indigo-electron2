@@ -15,6 +15,7 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import SignUp from './SignUp';
 import { dark } from '@clerk/themes';
 import Clerk from "@clerk/clerk-js";
+import Standby from './Standby';
 
 //@ts-ignore
 const PUBLISHABLE_KEY = window.envVars.CLERK_PUBLISHABLE_KEY || '';
@@ -69,6 +70,7 @@ export default function App() {
             <Route path="/oops-error" element={<OopsError />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/standby" element={<Standby />} />
           </Routes>
         </Router>
       </ClerkProvider>

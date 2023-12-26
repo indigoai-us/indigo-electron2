@@ -254,6 +254,11 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
+  mainWindow.on('hide', () => {
+    console.log('Window is hidden');
+    // Your code here
+  });
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
@@ -281,7 +286,8 @@ const createWindow = async () => {
 app.commandLine.appendSwitch('wm-window-animations-disabled');
 
 app.on('window-all-closed', () => {
-  console.log('window-all-closed...');
+  
+  mainWindow && mainWindow.webContents.send('open-route', {route: 'standby'})
 
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
