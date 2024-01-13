@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import './App.css'
 import { useLocation, useNavigate } from 'react-router-dom';
-import createJob from '../utils/createJob';
 import IconBack from './icons/IconBack';
 
 const Inputs = () => {
@@ -62,7 +61,6 @@ const Inputs = () => {
 
   const submitJob = async () => {
     const command = location.state;
-    // const job = await createJob({command});
     navigate('/job',{state: command})
   }
   useEffect(() => {

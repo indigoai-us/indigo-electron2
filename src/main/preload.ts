@@ -3,7 +3,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 export type Channel = 'ipc-example';
-export type Chat = 'open-route';
+export type Chat = 'open-route' | 'sign-in-token';
 export type ResizeChannel = 'window-resize' | 'take-screenshot' | 'log';
 
 const electronHandler = {
@@ -42,5 +42,13 @@ const electronHandler = {
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);
+
+console.log('preload env var:', process.env.CLERK_PUBLISHABLE_KEY);
+
+contextBridge.exposeInMainWorld('envVars', {
+  CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY,
+  AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+});
 
 export type ElectronHandler = typeof electronHandler;

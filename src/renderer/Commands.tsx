@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Auth, API } from 'aws-amplify';
 import { useLocation, useNavigate } from 'react-router-dom';
-import logo from '../../assets/images/IndigoLogoHorizontal2.png';
 import './App.css'
-import createJob from '../utils/createJob';
 import getClip from '../utils/getClip';
 import IconArrowDown from './icons/IconArrowDown';
 import IconArrowUp from './icons/IconArrowUp';
 import IconEsc from './icons/IconEsc';
 import { useAppStore } from '../../lib/store';
 import IconHistory from './icons/IconHistory';
+import { useAuth, useClerk } from '@clerk/clerk-react';
 
 const Commands = () => {
   const location = useLocation();
@@ -23,7 +21,10 @@ const Commands = () => {
   const { commands, fetchCommands, jobs, fetchJobs } = useAppStore()
   const [localCommands, setLocalCommands] = useState(commands);
   const scrollDivRef = useRef<HTMLDivElement | null>(null);
-  const [img, setImg] = useState<any>(location?.state?.img);
+  const { signOut } = useClerk();
+  const { getToken } = useAuth();
+  const { user } = useClerk();
+  const [gotJobs, setGotJobs] = useState(false);
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
@@ -66,17 +67,18 @@ const Commands = () => {
 
   useEffect(() => {
     if(commands.length === 0) {
-      fetchCommands()
+      fetchCommands(getToken)
     }
 
     handleLocalCommands(commands);
   }, [commands, location])
 
   useEffect(() => {
-    if(jobs.length === 0) {
-      fetchJobs()
+    if(!gotJobs && user) {
+      fetchJobs(user, getToken)
+      setGotJobs(true);
     }
-  }, [jobs])
+  }, [gotJobs, user])
 
   // const getCommands = async () => {
 
@@ -104,7 +106,7 @@ const Commands = () => {
     }
     // Use Command key for Mac and Ctrl key for others
     if((window.navigator.userAgent.includes('Mac') && event.metaKey && event.key === 'r') || (!window.navigator.userAgent.includes('Mac') && event.ctrlKey && event.key === 'r')) {
-      fetchCommands();
+      fetchCommands(getToken);
     }
     if(event.key === 'Enter') {
       const command = commands[highlightedIndex];
@@ -170,9 +172,8 @@ const Commands = () => {
 
   const handleLogout = async () => {
     try {
-      const loggedOut = await Auth.signOut();
-      console.log('loggedOut: ', loggedOut);
-      navigate('/login');
+      signOut(() => navigate("/login"))
+      // navigate('/login');
     } catch (error) {
       console.log('error signing out: ', error);
     }
@@ -203,7 +204,7 @@ const Commands = () => {
       <div className="grow overflow-auto w-full p-2 h-full command-list" ref={scrollDivRef}>
         {localCommands.map((command: any, index: number) => (
           <div
-            key={command.id}
+            key={index}
             id={command._id}
             className={`p-2 cursor-pointer flex justify-between command ${highlightedIndex === index ? 'command-highlighted' : ''}`}
             onClick={() => runCommand(command)}
@@ -225,7 +226,7 @@ const Commands = () => {
         ))}
       </div>
       <div className='flex flex-row justify-around w-full py-4 text-xs text-gray-600'>
-        <div onClick={() => fetchCommands()} className='cursor-pointer'>
+        <div onClick={() => fetchCommands(getToken)} className='cursor-pointer'>
           <span className='mr-2 text-gray-300'>
           {window.navigator.userAgent.includes('Mac') ? '⌘+r' : 'ctrl+r'}
           </span>
@@ -237,7 +238,6 @@ const Commands = () => {
             <span className='mr-2'><IconArrowUp /></span>
             <span className='text-gray-400'>Navigate</span>
           </span>
-
         </div>
         <div className='flex flex-row'>
           <span className='mr-2'><IconEsc/></span>

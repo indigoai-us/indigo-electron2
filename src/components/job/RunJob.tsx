@@ -16,6 +16,7 @@ import IconChatBubble from '../../renderer/icons/IconChatBubble';
 import IconFormBubble from '../../renderer/icons/IconFormBubble';
 import handleGoBack from '../../utils/handleGoBack';
 import IconList from '../../renderer/icons/IconList';
+import { useAuth } from '@clerk/clerk-react';
 
 export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   const [stream, setStream] = useState(true);
@@ -32,6 +33,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
   const [isOpenEnded, setIsOpenEnded] = useState(false);
   const [chatLayout, setChatLayout] = useState(false);
   const navigate = useNavigate();
+  const { getToken } = useAuth();
 
   useEffect(() => {
     if(command || id) {
@@ -73,7 +75,7 @@ export default function RunJob({id, openEnded, resetChat, command, img}: any) {
 
       console.log('id: ', id);
 
-      const newJob = id ? await getExistingJob(id) : await createJob({command, img});
+      const newJob = id ? await getExistingJob(id) : await createJob({command, img, getToken});
 
       setJob(newJob);
 

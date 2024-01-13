@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Auth, API } from 'aws-amplify';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/icons/512x512.png';
 import './App.css'
 import { useAppStore } from '../../lib/store';
+import { useAuth, useSignIn, useUser } from '@clerk/clerk-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +13,16 @@ const Login = () => {
   const navigate = useNavigate();
   const { fetchCommands } = useAppStore()
   const emailRef = useRef<HTMLInputElement | null>(null);
+  const { getToken } = useAuth();
+  const location = useLocation();
+  const [signInToken, setSignInToken] = useState(null);
+  const { signIn, setActive } = useSignIn();
+  const { user: clerkUser } = useUser();
+  const [user, setUser] = useState<any>(null);
+
+  window.electron.ipcRenderer.send('log', 
+    { level: 'error', message: 'loading login', object: 'this log is in Login component load' }
+  );
 
   useEffect(() => {
     if (emailRef.current) {
@@ -24,29 +34,47 @@ const Login = () => {
     window.electron.ipcRenderer.send(
       'window-resize',
       600, // width
-      600  // height
+      700  // height
     )
   }, []);
 
-  const handleLogin = async (e: any) => {
-    e.preventDefault();
-    setIsLoading(true);
-    console.log('login email: ', email);
-    console.log('login password: ', password);
-    try {
-      await Auth.signIn(email, password).then((user: any) => {
+  useEffect(() => {
+    
+    const trySignIn = async () => {      
+      try {
         console.log('user: ', user);
-        fetchCommands();
-        navigate('/');
-        setIsLoading(false);
-        return user;
-      });
-    } catch (error) {
-      console.log('error signing in', error);
-      setLoginIncorrect(true);
-      setIsLoading(false);
+        if(user) {
+          navigate('/');
+          return;
+        } else {
+          const token = location?.state?.token;
+          console.log('token: ', token);
+          if(token) {
+            const signInResponse = await signIn?.create({strategy: 'ticket', ticket: token});
+            console.log('signInResponse: ', signInResponse);
+            if(setActive) {
+              await setActive({
+                session: signInResponse?.createdSessionId,
+              });
+            } else {
+              console.log('no setActive');
+            }
+            setUser(signInResponse?.userData);
+            return;
+          }
+        }
+      } catch (error: any) {
+        console.log('error: ', error);
+      }
     }
-  };
+    trySignIn();
+  }, [location, user, setActive]);
+
+  useEffect(() => {
+    if(clerkUser) {
+      setUser(clerkUser);
+    }
+  }, [clerkUser]);
 
   return (
     <div className={`main flex flex-col items-center justify-center h-screen`}>
@@ -54,47 +82,21 @@ const Login = () => {
         <img width="40" alt="IndigoAI" src={logo} />
         <div className='text-5xl ml-2 relative bottom-1'>Indigo</div>
       </div>
-      <form className="mt-6" onSubmit={handleLogin}>
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-normal text-slate-300"
-          >
-            Email
-          </label>
-          <input
-            ref={emailRef}
-            type="email"
-            name="email"
-            onChange={(e) => setEmail(e.target.value)}
-            className="block w-full px-4 py-2 mt-2 text-slate-300 backdrop-brightness-90 bg-transparent outline-none  border rounded-md border-zinc-700 hover:border-zinc-500 focus:border-indigo-500  "
-          />
-          <label
-            htmlFor="password"
-            className="block text-sm font-normal text-slate-300 mt-3"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            className="block w-full px-4 py-2 mt-2 text-slate-300 backdrop-brightness-90 bg-transparent outline-none  border rounded-md border-zinc-700 hover:border-zinc-500 focus:border-indigo-500  "
-          />
-        </div>
-
-        <div className="Hello">
+      <div className='text-center text-sm mt-6'>
+        {/* <SignIn redirectUrl="/" signUpUrl="/sign-up"/> */}
+        <a
+          href="https://app2.getindigo.ai/desktop-auth"
+          target="_blank"
+          rel="noreferrer"
+        >
           <button
-            type="submit"
-            className='bg-indigo-700 rounded-md px-4 py-2 transition-all hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none'
-            style={{width: '100%'}}
-            disabled={isLoading}
+            className='mt-2 mb-2 bg-indigo-700 rounded-md px-4 py-2 transition-all hover:bg-indigo-600 active:bg-indigo-700 focus:outline-none w-200'
           >
-            {isLoading ? 'Logging in...' : 'Login'}
+            Authenticate
           </button>
-        </div>
-      </form>
-      <div className='flex-col content-center'>
+        </a>
+      </div>
+      <div className='flex-col content-center mt-4'>
         <a
           href="https://app.getindigo.ai/create-account"
           target="_blank"

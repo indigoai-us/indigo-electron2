@@ -1,23 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Auth } from 'aws-amplify';
+import { useUser } from '@clerk/clerk-react';
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 
 export default function PrivateRoute({ children, ...rest }: any) {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const { user, isLoaded } = useUser();
   const navigate = useNavigate();
-  
-  useEffect(() => {
-    Auth.currentAuthenticatedUser()
-      .then((user) => {
-        setIsAuthenticated(true);
-        return user;
-      })
-      .catch((err) => {
-        setIsAuthenticated(false);
-      });
-  }, []);
-  console.log('isAuthenticated: ', isAuthenticated);
 
   useEffect(() => {
     const openRoute = (payload: any) => {
@@ -26,11 +14,25 @@ export default function PrivateRoute({ children, ...rest }: any) {
     };
   
     window.electron.ipcRenderer.on('open-route', openRoute);
+
+    const finishSignInToken = (payload: any) => {
+      navigate('/login',
+      {
+        state: { token: payload.token }
+      })
+    };
   
+    window.electron.ipcRenderer.on('sign-in-token', finishSignInToken);
+      
     return () => {
       window.electron.ipcRenderer.removeListener('open-route', openRoute);
+      window.electron.ipcRenderer.removeListener('sign-in-token', finishSignInToken);
     };
   }, [navigate]);
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  useEffect(() => {
+    console.log('privateRoute user: ', user);
+  }, [user]);    
+
+  return isLoaded ? (user ? <Outlet /> : <Navigate to="/login" />) : null;
 }
