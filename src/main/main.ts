@@ -161,7 +161,8 @@ const createTray = () => {
   const icon = getAssetPath('icon.png')
   const trayicon = nativeImage.createFromPath(icon)
   tray = new Tray(trayicon.resize({width: 16}))
-  const contextMenu = Menu.buildFromTemplate([
+
+  const menuTemplate = <any>[
     {
       label: 'Show App',
       accelerator: 'Alt+I',
@@ -179,11 +180,35 @@ const createTray = () => {
         app.quit()
       }
     },
-    {
-      label: `App Version: ${app.getVersion()}`, // Add this line
-      enabled: false, // Make it unclickable
-    },
-  ])
+  ]
+
+  function switchDisplay() {
+    if (mainWindow) {
+      const allDisplays = screen.getAllDisplays();
+      console.log('allDisplays: ', allDisplays);      
+      const currentDisplay = screen.getDisplayMatching(mainWindow.getBounds());
+      const currentIndex = allDisplays.findIndex(display => display.id === currentDisplay.id);
+      const nextIndex = (currentIndex + 1) % allDisplays.length; // Wrap around to the first display if we're at the end
+      const nextDisplay = allDisplays[nextIndex];
+      const { x, y } = nextDisplay.bounds;
+      mainWindow.setPosition(x, y);
+    }
+  }
+  
+  if(screen.getAllDisplays().length > 1) {
+    menuTemplate.push({
+      label: 'Switch Monitor',
+      accelerator: 'Alt+M',
+      click: switchDisplay
+    });
+  }
+
+  menuTemplate.push({
+    label: `App Version: ${app.getVersion()}`, // Add this line
+    enabled: false, // Make it unclickable
+  });
+
+  const contextMenu = Menu.buildFromTemplate(menuTemplate)
 
   tray.on('click', () => {
     if (mainWindow === null) {
@@ -254,6 +279,11 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
+  mainWindow.on('hide', () => {
+    console.log('Window is hidden');
+    // Your code here
+  });
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
@@ -281,7 +311,8 @@ const createWindow = async () => {
 app.commandLine.appendSwitch('wm-window-animations-disabled');
 
 app.on('window-all-closed', () => {
-  console.log('window-all-closed...');
+  
+  mainWindow && mainWindow.webContents.send('open-route', {route: 'standby'})
 
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
@@ -432,7 +463,7 @@ app
     });
 
     app.removeAsDefaultProtocolClient('indigo');
-
+  
     // If we are running a non-packaged version of the app && on windows
     if (process.argv.length >= 2) {
       app.setAsDefaultProtocolClient('indigo', process.execPath, [

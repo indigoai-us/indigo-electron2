@@ -21,14 +21,10 @@ const Commands = () => {
   const { commands, fetchCommands, jobs, fetchJobs } = useAppStore()
   const [localCommands, setLocalCommands] = useState(commands);
   const scrollDivRef = useRef<HTMLDivElement | null>(null);
-  const [img, setImg] = useState<any>(location?.state?.img);
   const { signOut } = useClerk();
   const { getToken } = useAuth();
   const { user } = useClerk();
   const [gotJobs, setGotJobs] = useState(false);
-
-  console.log('loading commands...');
-  
 
   useEffect(() => {
     window.electron.ipcRenderer.send(
@@ -208,7 +204,7 @@ const Commands = () => {
       <div className="grow overflow-auto w-full p-2 h-full command-list" ref={scrollDivRef}>
         {localCommands.map((command: any, index: number) => (
           <div
-            key={command.id}
+            key={index}
             id={command._id}
             className={`p-2 cursor-pointer flex justify-between command ${highlightedIndex === index ? 'command-highlighted' : ''}`}
             onClick={() => runCommand(command)}
@@ -242,7 +238,6 @@ const Commands = () => {
             <span className='mr-2'><IconArrowUp /></span>
             <span className='text-gray-400'>Navigate</span>
           </span>
-
         </div>
         <div className='flex flex-row'>
           <span className='mr-2'><IconEsc/></span>

@@ -5,11 +5,14 @@ import { v4 as uuidv4 } from "uuid";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppStore } from '../../lib/store';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import Lottie from "lottie-react";
+import diffusionAnim1 from "../../assets/animations/circle2-loader.json";
 
 const ScreenOverlay = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { commands } = useAppStore()
+  const [inFlight, setInFlight] = useState(false);
 
   //@ts-ignore
   console.log('window.envVars.AWS_ACCESS_KEY_ID: ', window.envVars.AWS_ACCESS_KEY_ID);
@@ -55,9 +58,7 @@ const ScreenOverlay = () => {
   }, [commands]);
 
   const takeScreenshot = (dimens: any) => {
-    window.electron.ipcRenderer.send('log', 
-      { level: 'error', message: 'taking screenshot', object: dimens }
-    );
+    setInFlight(true);
     window.electron.ipcRenderer.send(
       'take-screenshot',
       dimens
@@ -144,6 +145,7 @@ const ScreenOverlay = () => {
   
           // navigate('/vision-job',{state: {img: storedFileUrl}})
           navigate('/',{state: {img: storedFileUrl, command: location?.state?.command, copied: location?.state?.copied}})
+          setInFlight(false);
   
         } catch (error: any) {
           console.log("Error uploading file: ", error);
@@ -153,7 +155,7 @@ const ScreenOverlay = () => {
               suggestion: error.message
             }
           })
-  
+          setInFlight(false);  
         }
 
       } catch (error: any) {
@@ -165,6 +167,7 @@ const ScreenOverlay = () => {
             suggestion: error.message
           }
         })
+        setInFlight(false);
 
       }
 
@@ -178,29 +181,36 @@ const ScreenOverlay = () => {
     };
   }, []);
 
-  return (
-    <div className="overlay">
-      <Selecto
-        dragContainer={".overlay"}
-        selectableTargets={[".selecto-area .cube"]}
-        hitRate={100}
-        selectByClick={true}
-        selectFromInside={true}
-        ratio={0}
-        onSelectStart={e => {
-          console.log('onSelectStart e: ', e);
-        }}
-        onSelectEnd={e => {
-          console.log('onSelectEnd e: ', e.rect);
-          takeScreenshot(e.rect);
-        }}
-      ></Selecto>
-
-      <div className="selecto-area" id="selecto1">
-
+  return inFlight ? 
+      (
+      <div className={`overscroll-none grid h-screen place-items-center`}>
+        <Lottie animationData={diffusionAnim1} loop={true} style={{width: '20%'}}/>
       </div>
-    </div>
-  );
+      )
+    :
+      (
+      <div className="overlay">
+        <Selecto
+          dragContainer={".overlay"}
+          selectableTargets={[".selecto-area .cube"]}
+          hitRate={100}
+          selectByClick={true}
+          selectFromInside={true}
+          ratio={0}
+          onSelectStart={e => {
+            console.log('onSelectStart e: ', e);
+          }}
+          onSelectEnd={e => {
+            console.log('onSelectEnd e: ', e.rect);
+            takeScreenshot(e.rect);
+          }}
+        ></Selecto>
+
+        <div className="selecto-area" id="selecto1">
+
+        </div>
+      </div>
+   );
 };
 
 export default ScreenOverlay;
